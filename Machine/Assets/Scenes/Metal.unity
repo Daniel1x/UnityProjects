@@ -504,15 +504,35 @@ PrefabInstance:
       propertyPath: moveSpeed
       value: 0.25
       objectReference: {fileID: 0}
+    - target: {fileID: 1538914851697274163, guid: 9f50b7df293b49a4d9dbd613a125f67a,
+        type: 3}
+      propertyPath: moveStyle
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
         type: 3}
       propertyPath: numOfCircles
-      value: 5
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
         type: 3}
       propertyPath: pointsPerCircle
-      value: 16
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
+        type: 3}
+      propertyPath: deflectionAngle
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
+        type: 3}
+      propertyPath: pointsInFirstLayer
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
+        type: 3}
+      propertyPath: cutDirection.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f50b7df293b49a4d9dbd613a125f67a, type: 3}

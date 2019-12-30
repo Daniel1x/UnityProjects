@@ -11,6 +11,10 @@ public class KnifeControll : MonoBehaviour
     /// </summary>
     [Range(0.05f, 10f)] public float downSpeed = 1f;
     /// <summary>
+    /// Chosen knife movement style.
+    /// </summary>
+    public MoveStyle moveStyle = MoveStyle.Dynamic;
+    /// <summary>
     /// Knife movement enabled.
     /// </summary>
     public static bool run = true;
@@ -38,19 +42,18 @@ public class KnifeControll : MonoBehaviour
     /// Bool responsible for movement on Y axis.
     /// </summary>
     private bool goingUp = true;
+    /// <summary>
+    /// Enums for knife movement style.
+    /// </summary>
+    public enum MoveStyle {Dynamic, Stable};
 
     private void Update()
     {
         if (!run) return;
         // Check boundaries on Y axis.
         CheckPosition();
-        // Setting movement on X axis.
-        downward = Input.GetMouseButton(0) ? -1f : 1f;
-        // Calculating new position of knife.
-        Vector3 pos = transform.position + (new Vector3(downward * downSpeed, moveSpeed * (goingUp ? 1f : -1f), 0f) * Time.deltaTime);
-        // Clamping new position with X axis boundaries.
-        pos.x = Mathf.Clamp(pos.x, minX, maxX);
-        transform.position = pos;
+        // Moving the knife.
+        Move(moveStyle);
     }
 
     /// <summary>
@@ -60,5 +63,58 @@ public class KnifeControll : MonoBehaviour
     {
         if (!goingUp && transform.position.y < minY) goingUp = true;
         else if (goingUp && transform.position.y > maxY) goingUp = false;
+    }
+
+    /// <summary>
+    /// Choosing a good knife movement style based on input data.
+    /// </summary>
+    /// <param name="moveStyle"></param>
+    private void Move(MoveStyle moveStyle)
+    {
+        switch(moveStyle)
+        {
+            case MoveStyle.Dynamic:
+                DynamicMove();
+                break;
+            case MoveStyle.Stable:
+                StableMove();
+                break;
+            default: break;
+        }
+    }
+
+    /// <summary>
+    /// Dynamic move of knife based on actual touch input.
+    /// </summary>
+    private void DynamicMove()
+    {
+        // Setting movement on X axis.
+        downward = Input.GetMouseButton(0) ? -1f : 1f;
+        // Calculation of the new knife position
+        CalculateNewPosition();
+    }
+
+    /// <summary>
+    /// Stable move of knife based on actual and previous touch inputs.
+    /// </summary>
+    private void StableMove()
+    {
+        // Setting movement on X axis.
+        if (Input.GetMouseButton(0)) downward = (Input.mousePosition.x / Screen.width <= 0.5f) ? -1f : 1f;
+        else downward = 0;
+        // Calculating new position of knife.
+        CalculateNewPosition();
+    }
+
+    /// <summary>
+    /// Calculation of a new knife position based on the set value of the "downward" variable.
+    /// </summary>
+    private void CalculateNewPosition()
+    {
+        // Calculation of the new knife position
+        Vector3 pos = transform.position + (new Vector3(downward * downSpeed, moveSpeed * (goingUp ? 1f : -1f), 0f) * Time.deltaTime);
+        // Clamping new position with X axis boundaries.
+        pos.x = Mathf.Clamp(pos.x, minX, maxX);
+        transform.position = pos;
     }
 }

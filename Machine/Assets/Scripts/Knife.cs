@@ -3,13 +3,21 @@
 public class Knife : MonoBehaviour
 {
     /// <summary>
+    /// Points in first layer. These points will be deflected by the given angle.
+    /// </summary>
+    public int pointsInFirstLayer = 4;
+    /// <summary>
+    /// The angle by which the points of the first layer of the blade will be deflected.
+    /// </summary>
+    [Range(0f, 30f)] public float deflectionAngle = 1f;
+    /// <summary>
     /// Points per layer of raycasts on circle.
     /// </summary>
-    public int pointsPerCircle = 8;
+    [Range(0, 16)] public int pointsPerCircle = 8;
     /// <summary>
     /// Number of layers of raycasts on blade.
     /// </summary>
-    public int numOfCircles = 2;
+    [Range(0, 16)] public int numOfCircles = 2;
     /// <summary>
     /// Direction of projected raycasts.
     /// </summary>
@@ -52,7 +60,7 @@ public class Knife : MonoBehaviour
     /// Radius of knife sphere.
     /// </summary>
     private float distance;
-
+    
     private void Start()
     {
         // Setting range of rays.
@@ -62,7 +70,7 @@ public class Knife : MonoBehaviour
         // Moving global point from which rays are sent.
         head.position = head.position + (Vector3.right * rayRange);
         // Calculating total number of raycasts.
-        numberOfPoints = 1 + numOfCircles * pointsPerCircle;
+        numberOfPoints = pointsInFirstLayer + 1 + numOfCircles * pointsPerCircle;
         // Allocating memory for all edges.
         edges = new Vector3[numberOfPoints];
         // Allocating memory for all offset vectors.
@@ -71,13 +79,19 @@ public class Knife : MonoBehaviour
         distance = head.transform.lossyScale.x * 0.5f;
 
         // Setting offsets.
-        offsets[0] = distance * -Vector3.right;
+        offsets[0] = transform.rotation * (distance * Vector3.down);
+        // First layer. Top layer.
+        for(int i = 0; i < pointsInFirstLayer; i++)
+        {
+            offsets[1 + i] = transform.rotation * (Quaternion.Euler(0f, i * 360f / pointsInFirstLayer, 0f) * (Quaternion.Euler(deflectionAngle, 0f, 0f) * (Vector3.down * distance)));
+        }
+        // Other layers.
         for (int layer = 0; layer < numOfCircles; layer++)
         {
             for (int point = 0; point < pointsPerCircle; point++)
             {
-                offsets[1 + point + layer * pointsPerCircle] = transform.rotation * (Quaternion.Euler(0f, point * 360f / pointsPerCircle, 0f)
-                                                            * (Quaternion.Euler(0f, 0f, -90f * layer / numOfCircles) * (distance * Vector3.right)));
+                offsets[1 + pointsInFirstLayer + point + layer * pointsPerCircle] = transform.rotation * (Quaternion.Euler(0f, point * 360f / pointsPerCircle, 0f)
+                                                                                  * (Quaternion.Euler(0f, 0f, -90f * layer / numOfCircles) * (distance * Vector3.right)));
             }
         }
 
