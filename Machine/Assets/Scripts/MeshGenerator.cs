@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.IO;
 
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -65,6 +66,10 @@ public class MeshGenerator : MonoBehaviour
     /// </summary>
     public bool enableShapeModification = false;
 
+    /// <summary>
+    /// Unchanged mesh.
+    /// </summary>
+    private Vector3[] startVertices;
     /// <summary>
     /// Created mesh.
     /// </summary>
@@ -136,6 +141,8 @@ public class MeshGenerator : MonoBehaviour
         vertices[bottomVertex] = Vector3.down * spikeSize;
         // Top vertex.
         vertices[bottomVertex + 1] = new Vector3(0f, vertices[(numVertices * numParts) - 1].y + spikeSize, 0f);
+        // Copy created array.
+        CopyVerticesArray();
         
         // Triangle index placeholder.
         int triangleID = 0;
@@ -224,6 +231,10 @@ public class MeshGenerator : MonoBehaviour
         if (drawVertices) DrawVertices();
         CheckEdges();
         UpdateMesh();
+        
+        if (Input.GetKeyDown(KeyCode.S)) SaveMeshToFile();
+        if (Input.GetKeyDown(KeyCode.L)) LoadMeshFromFile();
+        if (Input.GetKeyDown(KeyCode.R)) ResetMesh();
     }
 
     /// <summary>
@@ -345,4 +356,71 @@ public class MeshGenerator : MonoBehaviour
     private void OnCollisionEnter(Collision collision) => Debug.Log("Collision Enter");
     private void OnCollisionStay(Collision collision) => Debug.Log("Collision Stay");
     private void OnCollisionExit(Collision collision) => Debug.Log("Collision Exit");
+
+    /// <summary>
+    /// Save mesh vertices to created txt file.
+    /// </summary>
+    private void SaveMeshToFile()
+    {
+        string path = Application.dataPath + "/meshData.txt";
+        StreamWriter dataFile = File.CreateText(path);
+        
+        for(int i = 0; i < vertices.Length; i++)
+        {
+            string line = "";
+            line += vertices[i].x.ToString() + ";";
+            line += vertices[i].y.ToString() + ";";
+            line += vertices[i].z.ToString() + ";";
+
+            dataFile.WriteLine(line);
+        }
+        dataFile.Close();
+    }
+
+    /// <summary>
+    /// Load mesh vertices from txt file.
+    /// </summary>
+    private void LoadMeshFromFile()
+    {
+        string path = Application.dataPath + "/meshData.txt";
+        if (File.Exists(path))
+        {
+            int lineCount = File.ReadAllLines(path).Length;
+            StreamReader dataFile = File.OpenText(path);
+            dataFile.BaseStream.Position = 0;
+            for(int i = 0; i < lineCount; i++)
+            {
+                string line = dataFile.ReadLine();
+                string[] data = line.Split(';');
+                vertices[i] = new Vector3(float.Parse(data[0]), float.Parse(data[1]), float.Parse(data[2]));
+            }
+            dataFile.Close();
+        }
+        needToUpdateMesh = true;
+        UpdateMesh();
+    }
+
+    /// <summary>
+    /// Reset vertices positions.
+    /// </summary>
+    private void ResetMesh()
+    {
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            vertices[i] = startVertices[i];
+        }
+        needToUpdateMesh = true;
+    }
+
+    /// <summary>
+    /// Copying vertices values.
+    /// </summary>
+    private void CopyVerticesArray()
+    {
+        startVertices = new Vector3[vertices.Length];
+        for(int i = 0; i < vertices.Length; i++)
+        {
+            startVertices[i] = vertices[i];
+        }
+    }
 }
