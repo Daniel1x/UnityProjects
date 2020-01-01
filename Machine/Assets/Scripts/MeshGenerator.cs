@@ -231,10 +231,8 @@ public class MeshGenerator : MonoBehaviour
         if (drawVertices) DrawVertices();
         CheckEdges();
         UpdateMesh();
-        
-        if (Input.GetKeyDown(KeyCode.S)) SaveMeshToFile();
-        if (Input.GetKeyDown(KeyCode.L)) LoadMeshFromFile();
-        if (Input.GetKeyDown(KeyCode.R)) ResetMesh();
+
+        ModifyShapeBasedOnFiles();
     }
 
     /// <summary>
@@ -423,4 +421,24 @@ public class MeshGenerator : MonoBehaviour
             startVertices[i] = vertices[i];
         }
     }
+
+    /// <summary>
+    /// The function supports invisible buttons at the top of the screen (Higher than 0.8 screen height). 
+    /// The mesh is saved to a file when a point is pressed in one third of the screen width (from the left). 
+    /// The mesh is loaded from the file when the point is pressed in the center (between 1/3 and 2/3 of the screen width). 
+    /// The mesh shape is reset when the point is pressed in one third of the screen width (from the right).
+    /// </summary>
+    private void ModifyShapeBasedOnFiles()
+    {
+        if (Input.GetMouseButtonDown(0) && Input.mousePosition.y / Screen.height >= 0.8f)
+        {
+            float mousePos = Input.mousePosition.x / Screen.width;
+            if (mousePos < 0.333f) SaveMeshToFile();
+            else if (mousePos >= 0.333f && mousePos < 0.666f) LoadMeshFromFile();
+            else if (mousePos >= 0.666f) ResetMesh();
+        }
+    }
+
+
+
 }

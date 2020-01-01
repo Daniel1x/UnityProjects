@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 3104008133191264169}
   m_Layer: 0
   m_Name: Mesh Generator
-  m_TagString: Untagged
+  m_TagString: GeneratedMesh
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -111,15 +111,17 @@ MonoBehaviour:
   material: {fileID: 2100000, guid: c31f5d40e3ba66843a0b776b36caf9fa, type: 2}
   meshName: GenericMesh
   numVertices: 16
-  numParts: 32
+  numParts: 100
   length: 0.1
   width: 5
+  spikeSize: 0.1
   vertices: []
   triangles: 
   layer: 0
   layers: 1
   drawVertices: 0
   debugMemory: 0
+  enableShapeModification: 0
 --- !u!114 &3104008133191264169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -132,4 +134,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64403d743ff42bc4481ba863dbfcb3e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationsPerSecond: 0.025
+  rotationsPerSecond: 1

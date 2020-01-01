@@ -494,46 +494,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: -90
       objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274163, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: downSpeed
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274163, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: moveSpeed
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274163, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: moveStyle
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: numOfCircles
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: pointsPerCircle
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: deflectionAngle
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: pointsInFirstLayer
-      value: 8
-      objectReference: {fileID: 0}
-    - target: {fileID: 1538914851697274165, guid: 9f50b7df293b49a4d9dbd613a125f67a,
-        type: 3}
-      propertyPath: cutDirection.y
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f50b7df293b49a4d9dbd613a125f67a, type: 3}
 --- !u!1001 &3104008133612305163
@@ -543,35 +503,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 3104008133191264150, guid: 12322264ca1529b42b8b988d697415b5,
-        type: 3}
-      propertyPath: spikeSize
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3104008133191264150, guid: 12322264ca1529b42b8b988d697415b5,
-        type: 3}
-      propertyPath: numParts
-      value: 100
-      objectReference: {fileID: 0}
-    - target: {fileID: 3104008133191264150, guid: 12322264ca1529b42b8b988d697415b5,
-        type: 3}
-      propertyPath: enableShapeModification
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 3104008133191264151, guid: 12322264ca1529b42b8b988d697415b5,
         type: 3}
       propertyPath: m_Name
       value: Mesh Generator
-      objectReference: {fileID: 0}
-    - target: {fileID: 3104008133191264151, guid: 12322264ca1529b42b8b988d697415b5,
-        type: 3}
-      propertyPath: m_TagString
-      value: GeneratedMesh
-      objectReference: {fileID: 0}
-    - target: {fileID: 3104008133191264169, guid: 12322264ca1529b42b8b988d697415b5,
-        type: 3}
-      propertyPath: rotationsPerSecond
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3104008133191264170, guid: 12322264ca1529b42b8b988d697415b5,
         type: 3}

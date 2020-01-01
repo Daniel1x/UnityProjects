@@ -11,6 +11,10 @@ public class KnifeControll : MonoBehaviour
     /// </summary>
     [Range(0.05f, 10f)] public float downSpeed = 1f;
     /// <summary>
+    /// Enums for knife movement style.
+    /// </summary>
+    public enum MoveStyle { Dynamic, Stable };
+    /// <summary>
     /// Chosen knife movement style.
     /// </summary>
     public MoveStyle moveStyle = MoveStyle.Dynamic;
@@ -35,6 +39,16 @@ public class KnifeControll : MonoBehaviour
     /// </summary>
     public static float minY = -0.5f;
     /// <summary>
+    /// Variable used to control the frequency of checking the shape.
+    /// Setting to "true" means that the blade is in the rest position.
+    /// </summary>
+    public static bool needToCheckShape = false;
+    /// <summary>
+    /// Variable used to control the frequency of checking the shape.
+    /// Setting to "true" means that the blade is in the rest position and the shape of the mesh has been checked.
+    /// </summary>
+    public static bool alreadyChecked = false;
+    /// <summary>
     /// Number changed by touch input. Responsible for movement on X axis.
     /// </summary>
     private float downward;
@@ -42,10 +56,6 @@ public class KnifeControll : MonoBehaviour
     /// Bool responsible for movement on Y axis.
     /// </summary>
     private bool goingUp = true;
-    /// <summary>
-    /// Enums for knife movement style.
-    /// </summary>
-    public enum MoveStyle {Dynamic, Stable};
 
     private void Update()
     {

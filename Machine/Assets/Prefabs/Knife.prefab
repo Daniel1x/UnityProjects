@@ -155,8 +155,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5d9794290252d34199c9cdff3200d7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointsPerCircle: 8
-  numOfCircles: 2
+  pointsInFirstLayer: 8
+  deflectionAngle: 10
+  pointsPerCircle: 6
+  numOfCircles: 3
   cutDirection: {x: -1, y: 0, z: 0}
   head: {fileID: 1538914849870245619}
   drawPoints: 1
@@ -173,5 +175,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 562061af0067dee4a81549230da6d746, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 1
+  moveSpeed: 0.25
   downSpeed: 1
+  moveStyle: 1
