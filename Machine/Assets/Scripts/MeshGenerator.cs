@@ -65,11 +65,19 @@ public class MeshGenerator : MonoBehaviour
     /// Enable modification of shape, with inputs from keyboard. (Arrows & W-S keys).
     /// </summary>
     public bool enableShapeModification = false;
+    /// <summary>
+    /// Calculated error between two meshes.
+    /// </summary>
+    public float calculatedRMSE = float.MaxValue;
 
     /// <summary>
     /// Unchanged mesh.
     /// </summary>
     private Vector3[] startVertices;
+    /// <summary>
+    /// Unchanged mesh.
+    /// </summary>
+    private Vector3[] targetVertices;
     /// <summary>
     /// Created mesh.
     /// </summary>
@@ -113,11 +121,30 @@ public class MeshGenerator : MonoBehaviour
         mesh.SetVertices(vertices);
         mesh.SetTriangles(triangles, 0);
         mesh.RecalculateNormals();
-        // Updating mesh collider
+        // Updating mesh collider.
         meshCollider.sharedMesh = mesh;
         meshCollider.sharedMesh.MarkDynamic();
+        // Loading target mesh.
+        LoadTargetMeshFromFile();
     }
-    
+
+    private void Update()
+    {
+        if (enableShapeModification && Input.anyKey)
+        {
+            ResetIndexLimits();
+            ModifyShape();
+        }
+
+        if (drawVertices) DrawVertices();
+
+        CheckEdges();
+        ModifyShapeBasedOnFiles();
+        UpdateMesh();
+
+        TryToCalculateRMSE();
+    }
+
     /// <summary>
     /// Creating vertices and triangles of mesh.
     /// </summary>
@@ -224,17 +251,6 @@ public class MeshGenerator : MonoBehaviour
         needToUpdateMesh = false;
     }
     
-    private void Update()
-    {
-        ResetIndexLimits();
-        if (enableShapeModification && Input.anyKey) ModifyShape();
-        if (drawVertices) DrawVertices();
-        CheckEdges();
-        UpdateMesh();
-
-        ModifyShapeBasedOnFiles();
-    }
-
     /// <summary>
     /// Changing shape of mesh via inputs from keyboard. W and S keys changes how many layers of mesh are changing at the same time. 
     /// Vertical arrows changes actualy chosen layer. Horizontal arrows changes thickness of all chosen layers.
@@ -305,6 +321,7 @@ public class MeshGenerator : MonoBehaviour
                     vertices[triangles[(3 * triangleID) + j]] = (point.normalized * pointMagnitude) + (height * Vector3.up);
                 }
                 needToUpdateMesh = true;
+                KnifeControll.needToCheckShape = true;
             }
         }
     }
@@ -395,7 +412,6 @@ public class MeshGenerator : MonoBehaviour
             dataFile.Close();
         }
         needToUpdateMesh = true;
-        UpdateMesh();
     }
 
     /// <summary>
@@ -430,6 +446,7 @@ public class MeshGenerator : MonoBehaviour
     /// </summary>
     private void ModifyShapeBasedOnFiles()
     {
+        if (!Input.anyKey) return;
         if (Input.GetMouseButtonDown(0) && Input.mousePosition.y / Screen.height >= 0.8f)
         {
             float mousePos = Input.mousePosition.x / Screen.width;
@@ -439,6 +456,60 @@ public class MeshGenerator : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Calculating RMSE between two meshes. 
+    /// Error is based on magnitudes of vertices with respect to Y axis.
+    /// </summary>
+    /// <param name="meshVertices">Actual mesh.</param>
+    /// <param name="targetVertices">Target mesh.</param>
+    private void CalculateRMSE(Vector3[] meshVertices, Vector3[] targetVertices)
+    {
+        int numVertices = meshVertices.Length;
+        float error = 0;
+        for(int i = 0; i < numVertices; i++)
+        {
+            Vector3 v1 = meshVertices[i];
+            v1.y = 0;
+            Vector3 v2 = targetVertices[i];
+            v2.y = 0;
+            float m1 = v1.magnitude;
+            float m2 = v2.magnitude;
+            error += (m1 - m2) * (m1 - m2);
+        }
+        calculatedRMSE = error / numVertices;
+        KnifeControll.needToCheckShape = false;
+    }
 
+    /// <summary>
+    /// Function that tries to calculate RMSE.
+    /// </summary>
+    private void TryToCalculateRMSE()
+    {
+        if (KnifeControll.checkingAvailable && KnifeControll.needToCheckShape)
+        {
+            CalculateRMSE(vertices, targetVertices);
+        }
+    }
 
+    /// <summary>
+    /// Loading from file positions of target vertices.
+    /// </summary>
+    private void LoadTargetMeshFromFile(string shapeNr = "1")
+    {
+        string path = Application.dataPath + "/meshData_shape" + shapeNr + ".txt";
+        if (File.Exists(path))
+        {
+            int lineCount = File.ReadAllLines(path).Length;
+            targetVertices = new Vector3[lineCount];
+            StreamReader dataFile = File.OpenText(path);
+            dataFile.BaseStream.Position = 0;
+            for (int i = 0; i < lineCount; i++)
+            {
+                string line = dataFile.ReadLine();
+                string[] data = line.Split(';');
+                targetVertices[i] = new Vector3(float.Parse(data[0]), float.Parse(data[1]), float.Parse(data[2]));
+            }
+            dataFile.Close();
+        }
+    }
 }

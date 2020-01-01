@@ -47,7 +47,7 @@ public class KnifeControll : MonoBehaviour
     /// Variable used to control the frequency of checking the shape.
     /// Setting to "true" means that the blade is in the rest position and the shape of the mesh has been checked.
     /// </summary>
-    public static bool alreadyChecked = false;
+    public static bool checkingAvailable = false;
     /// <summary>
     /// Number changed by touch input. Responsible for movement on X axis.
     /// </summary>
@@ -123,6 +123,11 @@ public class KnifeControll : MonoBehaviour
     {
         // Calculation of the new knife position
         Vector3 pos = transform.position + (new Vector3(downward * downSpeed, moveSpeed * (goingUp ? 1f : -1f), 0f) * Time.deltaTime);
+        // Checking if knife is in rest position.
+        if (pos.x < maxX) checkingAvailable = false;
+        else if (pos.x >= maxX) checkingAvailable = true;
+        Debug.Log("Checking " + checkingAvailable);
+        Debug.Log("Need " + needToCheckShape);
         // Clamping new position with X axis boundaries.
         pos.x = Mathf.Clamp(pos.x, minX, maxX);
         transform.position = pos;
