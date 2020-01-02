@@ -2,18 +2,34 @@
 
 public class FollowKnife : MonoBehaviour
 {
+    /// <summary>
+    /// Knife gameobject to follow.
+    /// </summary>
     public GameObject knife;
-    public float zAxisOffset = -10f;
-    private Vector3 pos = new Vector3(0f, 0f, -10f);
+    /// <summary>
+    /// New position of camera.
+    /// </summary>
+    private Vector3 pos = new Vector3(0f, 0f, -17f);
+
+    private void Awake()
+    {
+        UpdatePosition();
+    }
 
     private void Start()
     {
-        pos.z = zAxisOffset;
-        pos.y = knife.transform.position.y;
-        transform.position = pos;
+        UpdatePosition();
     }
 
     private void LateUpdate()
+    {
+        UpdatePosition();
+    }
+
+    /// <summary>
+    /// Calculate new position of camera.
+    /// </summary>
+    private void UpdatePosition()
     {
         pos.y = knife.transform.position.y;
         transform.position = pos;

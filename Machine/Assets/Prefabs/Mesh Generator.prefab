@@ -89,7 +89,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3104008133191264151}
-  m_Material: {fileID: 13400000, guid: b064eee30e584fb4485ba002a8508778, type: 2}
+  m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -109,6 +109,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: c31f5d40e3ba66843a0b776b36caf9fa, type: 2}
+  targetMaterial: {fileID: 2100000, guid: 93d8a61e469cfc34b927af9139e63162, type: 2}
   meshName: GenericMesh
   numVertices: 16
   numParts: 100
@@ -122,6 +123,8 @@ MonoBehaviour:
   drawVertices: 0
   debugMemory: 0
   enableShapeModification: 0
+  calculatedRMSE: 3.4028235e+38
+  textBox: {fileID: 0}
 --- !u!114 &3104008133191264169
 MonoBehaviour:
   m_ObjectHideFlags: 0

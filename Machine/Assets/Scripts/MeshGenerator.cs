@@ -14,6 +14,10 @@ public class MeshGenerator : MonoBehaviour
     /// </summary>
     public Material material;
     /// <summary>
+    /// Material used to show target mesh.
+    /// </summary>
+    public Material targetMaterial;
+    /// <summary>
     /// Name of created mesh.
     /// </summary>
     public string meshName = "GenericMesh";
@@ -69,6 +73,10 @@ public class MeshGenerator : MonoBehaviour
     /// Calculated error between two meshes.
     /// </summary>
     public float calculatedRMSE = float.MaxValue;
+    /// <summary>
+    /// Text box used to show RMS error.
+    /// </summary>
+    public TextMesh textBox;
 
     /// <summary>
     /// Unchanged mesh.
@@ -126,6 +134,8 @@ public class MeshGenerator : MonoBehaviour
         meshCollider.sharedMesh.MarkDynamic();
         // Loading target mesh.
         LoadTargetMeshFromFile();
+        // Show target.
+        InstantiateTargetMesh();
     }
 
     private void Update()
@@ -474,9 +484,10 @@ public class MeshGenerator : MonoBehaviour
             v2.y = 0;
             float m1 = v1.magnitude;
             float m2 = v2.magnitude;
-            error += (m1 - m2) * (m1 - m2);
+            error += Mathf.Pow((m1 - m2) * 10f, 2f);
         }
         calculatedRMSE = error / numVertices;
+        textBox.text = calculatedRMSE.ToString("0.000");
         KnifeControll.needToCheckShape = false;
     }
 
@@ -511,5 +522,23 @@ public class MeshGenerator : MonoBehaviour
             }
             dataFile.Close();
         }
+    }
+
+    /// <summary>
+    /// Creating new gameobject from target mesh.
+    /// </summary>
+    private void InstantiateTargetMesh()
+    {
+        GameObject target = new GameObject();
+        target.name = "Target";
+        target.AddComponent<MeshFilter>();
+        target.AddComponent<MeshRenderer>();
+        target.GetComponent<MeshRenderer>().material = targetMaterial;
+        Mesh targetMesh = new Mesh();
+        targetMesh.SetVertices(targetVertices);
+        targetMesh.SetTriangles(triangles, 0);
+        targetMesh.RecalculateNormals();
+        targetMesh.name = "TargetMesh";
+        target.GetComponent<MeshFilter>().mesh = targetMesh;
     }
 }

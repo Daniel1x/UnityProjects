@@ -126,8 +126,6 @@ public class KnifeControll : MonoBehaviour
         // Checking if knife is in rest position.
         if (pos.x < maxX) checkingAvailable = false;
         else if (pos.x >= maxX) checkingAvailable = true;
-        Debug.Log("Checking " + checkingAvailable);
-        Debug.Log("Need " + needToCheckShape);
         // Clamping new position with X axis boundaries.
         pos.x = Mathf.Clamp(pos.x, minX, maxX);
         transform.position = pos;
