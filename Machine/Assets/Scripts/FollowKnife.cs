@@ -10,12 +10,7 @@ public class FollowKnife : MonoBehaviour
     /// New position of camera.
     /// </summary>
     private Vector3 pos = new Vector3(0f, 0f, -17f);
-
-    private void Awake()
-    {
-        UpdatePosition();
-    }
-
+    
     private void Start()
     {
         UpdatePosition();

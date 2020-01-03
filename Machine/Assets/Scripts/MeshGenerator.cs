@@ -24,11 +24,11 @@ public class MeshGenerator : MonoBehaviour
     /// <summary>
     /// Number of vertices on the circle in one part.
     /// </summary>
-    [Range(3, 1024)] public int numVertices = 3;
+    [Range(3, 36)] public int numVertices = 3;
     /// <summary>
     /// Number of parts from which mesh is created.
     /// </summary>
-    [Range(2, 8192)] public int numParts = 2;
+    [Range(2, 1024)] public int numParts = 2;
     /// <summary>
     /// Hight of one part of the mesh.
     /// </summary>
@@ -36,7 +36,7 @@ public class MeshGenerator : MonoBehaviour
     /// <summary>
     /// Width of created cylinder.
     /// </summary>
-    [Range(0.001f, 10f)] public float width = 1f;
+    [Range(0.01f, 10f)] public float width = 1f;
     /// <summary>
     /// The difference in height of the center point with its corresponding layers at the bottom or top of the mesh.
     /// </summary>
@@ -58,14 +58,6 @@ public class MeshGenerator : MonoBehaviour
     /// </summary>
     public int layers = 1;
     /// <summary>
-    /// Debug drawing lines enabled.
-    /// </summary>
-    public bool drawVertices = false;
-    /// <summary>
-    /// Checking numbers of allocated and used memory for mesh.
-    /// </summary>
-    public bool debugMemory = false;
-    /// <summary>
     /// Enable modification of shape, with inputs from keyboard. (Arrows & W-S keys).
     /// </summary>
     public bool enableShapeModification = false;
@@ -77,11 +69,7 @@ public class MeshGenerator : MonoBehaviour
     /// Text box used to show RMS error.
     /// </summary>
     public TextMesh textBox;
-
-    /// <summary>
-    /// Unchanged mesh.
-    /// </summary>
-    private Vector3[] startVertices;
+    
     /// <summary>
     /// Unchanged mesh.
     /// </summary>
@@ -106,6 +94,14 @@ public class MeshGenerator : MonoBehaviour
     /// Bool that controlls updating mesh.
     /// </summary>
     private bool needToUpdateMesh = true;
+    /// <summary>
+    /// Reference to instatiated target mesh game object.
+    /// </summary>
+    private GameObject targetMeshGO;
+    /// <summary>
+    /// Variable that indicates if target mesh was loaded.
+    /// </summary>
+    private bool targetLoaded = false;
 
     private void Start()
     {
@@ -132,10 +128,14 @@ public class MeshGenerator : MonoBehaviour
         // Updating mesh collider.
         meshCollider.sharedMesh = mesh;
         meshCollider.sharedMesh.MarkDynamic();
-        // Loading target mesh.
-        LoadTargetMeshFromFile();
-        // Show target.
-        InstantiateTargetMesh();
+    }
+
+    public void Restart()
+    {
+        Destroy(targetMeshGO);
+        targetLoaded = false;
+        mesh.Clear();
+        Start();
     }
 
     private void Update()
@@ -145,13 +145,8 @@ public class MeshGenerator : MonoBehaviour
             ResetIndexLimits();
             ModifyShape();
         }
-
-        if (drawVertices) DrawVertices();
-
         CheckEdges();
-        ModifyShapeBasedOnFiles();
-        UpdateMesh();
-
+        TryToUpdateMesh();
         TryToCalculateRMSE();
     }
 
@@ -178,8 +173,6 @@ public class MeshGenerator : MonoBehaviour
         vertices[bottomVertex] = Vector3.down * spikeSize;
         // Top vertex.
         vertices[bottomVertex + 1] = new Vector3(0f, vertices[(numVertices * numParts) - 1].y + spikeSize, 0f);
-        // Copy created array.
-        CopyVerticesArray();
         
         // Triangle index placeholder.
         int triangleID = 0;
@@ -237,27 +230,28 @@ public class MeshGenerator : MonoBehaviour
             triangles[triangleID++] = topVertex + i;
             triangles[triangleID++] = topVertex + (i + 1) % numVertices;
         }
+    }
 
-        if (debugMemory)
-        {
-            // Debug: Number of allocated space.
-            Debug.Log("Memory located: " + triangles.Length);
-            // Debug: Number of used space.
-            Debug.Log("Memory used: " + triangleID);
-            Debug.Log("Memory allocated and used should be equal!");
-        }
+    /// <summary>
+    /// Public function used to force mesh update.
+    /// </summary>
+    public void ForceUpdateMesh()
+    {
+        needToUpdateMesh = true;
+        TryToUpdateMesh();
     }
 
     /// <summary>
     /// Updating mesh and collider with modyfied vertices. Recalculating mesh normals.
     /// </summary>
-    private void UpdateMesh()
+    private void TryToUpdateMesh()
     {
         if (!needToUpdateMesh) return;
+        mesh.Clear();                       // <-- maybe without this
         mesh.SetVertices(vertices);
+        mesh.SetTriangles(triangles, 0);    // <-- maybe without this
         meshCollider.sharedMesh = mesh;
         mesh.RecalculateNormals();
-        if (debugMemory) Debug.Log("Mesh Updated!");
         needToUpdateMesh = false;
     }
     
@@ -354,117 +348,6 @@ public class MeshGenerator : MonoBehaviour
         if (actualID < minVertexIndex) minVertexIndex = actualID;
         if (actualID > maxVertexIndex) maxVertexIndex = actualID;
     }
-    
-    /// <summary>
-    /// Printing values of limits.
-    /// </summary>
-    private void PrintIndexLimits()
-    {
-        Debug.Log("Min: " + minVertexIndex);
-        Debug.Log("Max: " + maxVertexIndex);
-    }
-
-    /// <summary>
-    /// Drawing lines of all triangles in mesh.
-    /// </summary>
-    private void DrawVertices()
-    {
-        for (int i = 0; i < triangles.Length / 3; i++)
-        {
-            Debug.DrawLine(transform.rotation * vertices[triangles[3 * i]], transform.rotation * vertices[triangles[3 * i + 1]], Color.red);
-            Debug.DrawLine(transform.rotation * vertices[triangles[3 * i + 1]], transform.rotation * vertices[triangles[3 * i + 2]], Color.red);
-            Debug.DrawLine(transform.rotation * vertices[triangles[3 * i + 2]], transform.rotation * vertices[triangles[3 * i]], Color.red);
-        }
-    }
-
-    // Collisions
-    private void OnCollisionEnter(Collision collision) => Debug.Log("Collision Enter");
-    private void OnCollisionStay(Collision collision) => Debug.Log("Collision Stay");
-    private void OnCollisionExit(Collision collision) => Debug.Log("Collision Exit");
-
-    /// <summary>
-    /// Save mesh vertices to created txt file.
-    /// </summary>
-    private void SaveMeshToFile()
-    {
-        string path = Application.dataPath + "/meshData.txt";
-        StreamWriter dataFile = File.CreateText(path);
-        
-        for(int i = 0; i < vertices.Length; i++)
-        {
-            string line = "";
-            line += vertices[i].x.ToString() + ";";
-            line += vertices[i].y.ToString() + ";";
-            line += vertices[i].z.ToString() + ";";
-
-            dataFile.WriteLine(line);
-        }
-        dataFile.Close();
-    }
-
-    /// <summary>
-    /// Load mesh vertices from txt file.
-    /// </summary>
-    private void LoadMeshFromFile()
-    {
-        string path = Application.dataPath + "/meshData.txt";
-        if (File.Exists(path))
-        {
-            int lineCount = File.ReadAllLines(path).Length;
-            StreamReader dataFile = File.OpenText(path);
-            dataFile.BaseStream.Position = 0;
-            for(int i = 0; i < lineCount; i++)
-            {
-                string line = dataFile.ReadLine();
-                string[] data = line.Split(';');
-                vertices[i] = new Vector3(float.Parse(data[0]), float.Parse(data[1]), float.Parse(data[2]));
-            }
-            dataFile.Close();
-        }
-        needToUpdateMesh = true;
-    }
-
-    /// <summary>
-    /// Reset vertices positions.
-    /// </summary>
-    private void ResetMesh()
-    {
-        for (int i = 0; i < vertices.Length; i++)
-        {
-            vertices[i] = startVertices[i];
-        }
-        needToUpdateMesh = true;
-    }
-
-    /// <summary>
-    /// Copying vertices values.
-    /// </summary>
-    private void CopyVerticesArray()
-    {
-        startVertices = new Vector3[vertices.Length];
-        for(int i = 0; i < vertices.Length; i++)
-        {
-            startVertices[i] = vertices[i];
-        }
-    }
-
-    /// <summary>
-    /// The function supports invisible buttons at the top of the screen (Higher than 0.8 screen height). 
-    /// The mesh is saved to a file when a point is pressed in one third of the screen width (from the left). 
-    /// The mesh is loaded from the file when the point is pressed in the center (between 1/3 and 2/3 of the screen width). 
-    /// The mesh shape is reset when the point is pressed in one third of the screen width (from the right).
-    /// </summary>
-    private void ModifyShapeBasedOnFiles()
-    {
-        if (!Input.anyKey) return;
-        if (Input.GetMouseButtonDown(0) && Input.mousePosition.y / Screen.height >= 0.8f)
-        {
-            float mousePos = Input.mousePosition.x / Screen.width;
-            if (mousePos < 0.333f) SaveMeshToFile();
-            else if (mousePos >= 0.333f && mousePos < 0.666f) LoadMeshFromFile();
-            else if (mousePos >= 0.666f) ResetMesh();
-        }
-    }
 
     /// <summary>
     /// Calculating RMSE between two meshes. 
@@ -496,6 +379,7 @@ public class MeshGenerator : MonoBehaviour
     /// </summary>
     private void TryToCalculateRMSE()
     {
+        if (!targetLoaded) return;
         if (KnifeControll.checkingAvailable && KnifeControll.needToCheckShape)
         {
             CalculateRMSE(vertices, targetVertices);
@@ -505,23 +389,14 @@ public class MeshGenerator : MonoBehaviour
     /// <summary>
     /// Loading from file positions of target vertices.
     /// </summary>
-    private void LoadTargetMeshFromFile(string shapeNr = "1")
+    public void LoadTargetMesh(Vector3[] targetVerticesArray)
     {
-        string path = Application.dataPath + "/meshData_shape" + shapeNr + ".txt";
-        if (File.Exists(path))
-        {
-            int lineCount = File.ReadAllLines(path).Length;
-            targetVertices = new Vector3[lineCount];
-            StreamReader dataFile = File.OpenText(path);
-            dataFile.BaseStream.Position = 0;
-            for (int i = 0; i < lineCount; i++)
-            {
-                string line = dataFile.ReadLine();
-                string[] data = line.Split(';');
-                targetVertices[i] = new Vector3(float.Parse(data[0]), float.Parse(data[1]), float.Parse(data[2]));
-            }
-            dataFile.Close();
-        }
+        targetVertices = new Vector3[targetVerticesArray.Length];
+        for (int i = 0; i < targetVerticesArray.Length; i++)
+            targetVertices[i] = targetVerticesArray[i];
+        Destroy(targetMeshGO);
+        InstantiateTargetMesh();
+        targetLoaded = true;
     }
 
     /// <summary>
@@ -529,16 +404,16 @@ public class MeshGenerator : MonoBehaviour
     /// </summary>
     private void InstantiateTargetMesh()
     {
-        GameObject target = new GameObject();
-        target.name = "Target";
-        target.AddComponent<MeshFilter>();
-        target.AddComponent<MeshRenderer>();
-        target.GetComponent<MeshRenderer>().material = targetMaterial;
+        targetMeshGO = new GameObject();
+        targetMeshGO.name = "Target";
+        targetMeshGO.AddComponent<MeshFilter>();
+        targetMeshGO.AddComponent<MeshRenderer>();
+        targetMeshGO.GetComponent<MeshRenderer>().material = targetMaterial;
         Mesh targetMesh = new Mesh();
         targetMesh.SetVertices(targetVertices);
         targetMesh.SetTriangles(triangles, 0);
         targetMesh.RecalculateNormals();
         targetMesh.name = "TargetMesh";
-        target.GetComponent<MeshFilter>().mesh = targetMesh;
+        targetMeshGO.GetComponent<MeshFilter>().mesh = targetMesh;
     }
 }

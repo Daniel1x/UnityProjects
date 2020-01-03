@@ -43,6 +43,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6296c3022d34a234a87d9e353747e772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newSchapeID: 1
-  dataFileNameStyle: meshData_shape
-  dataFileFormat: .txt
+  meshDataContainer: {fileID: 11400000, guid: 07ee049b6c7356447b42c86d55d61180, type: 2}
+  dataFrom: {fileID: 11400000, guid: 07ee049b6c7356447b42c86d55d61180, type: 2}
+  dataTo: {fileID: 11400000, guid: 555765e533659b44286e30cc0cf96474, type: 2}
+  targetMesh: {fileID: 11400000, guid: 07ee049b6c7356447b42c86d55d61180, type: 2}

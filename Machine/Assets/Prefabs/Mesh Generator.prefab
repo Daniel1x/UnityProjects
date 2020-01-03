@@ -120,8 +120,6 @@ MonoBehaviour:
   triangles: 
   layer: 0
   layers: 1
-  drawVertices: 0
-  debugMemory: 0
   enableShapeModification: 0
   calculatedRMSE: 3.4028235e+38
   textBox: {fileID: 0}
