@@ -26,18 +26,27 @@ public class ShapeManager : MonoBehaviour
     /// <summary>
     /// Mesh generator reference.
     /// </summary>
-    private MeshGenerator meshGenerator;
-
-    private void Start()
-    {
-        meshGenerator = FindObjectOfType<MeshGenerator>();
-    }
-
+    public MeshGenerator meshGenerator;
+    /// <summary>
+    /// Knife control reference.
+    /// </summary>
+    public KnifeControll knifeControll;
+    /// <summary>
+    /// Rotate metal reference.
+    /// </summary>
+    public RotateMetal rotateMetal;
+    
     /// <summary>
     /// Collecting mesh data for a scriptable object.
     /// </summary>
     public void SaveNewShapeAsScriptableObject()
     {
+        meshDataContainer.rotationFrequency = rotateMetal.rotationsPerSecond;
+
+        meshDataContainer.moveSpeed = knifeControll.moveSpeed;
+        meshDataContainer.downSpeed = knifeControll.downSpeed;
+        meshDataContainer.moveStyle = knifeControll.moveStyle;
+
         meshDataContainer.numVertices = meshGenerator.numVertices;
         meshDataContainer.numParts = meshGenerator.numParts;
         meshDataContainer.length = meshGenerator.length;
@@ -52,6 +61,12 @@ public class ShapeManager : MonoBehaviour
     /// </summary>
     public void LoadShapeFromScriptableObject()
     {
+        rotateMetal.rotationsPerSecond = meshDataContainer.rotationFrequency;
+
+        knifeControll.moveSpeed = meshDataContainer.moveSpeed;
+        knifeControll.downSpeed = meshDataContainer.downSpeed;
+        knifeControll.moveStyle = meshDataContainer.moveStyle;
+
         meshGenerator.numVertices = meshDataContainer.numVertices;
         meshGenerator.numParts = meshDataContainer.numParts;
         meshGenerator.length = meshDataContainer.length;
@@ -92,8 +107,8 @@ public class ShapeManager : MonoBehaviour
     /// </summary>
     public void RestartMeshGenerator()
     {
-        meshGenerator.LoadTargetMesh(targetMesh.vertices);
         meshGenerator.Restart();
+        SetTargetShape();
     }
 
     /// <summary>
@@ -103,6 +118,12 @@ public class ShapeManager : MonoBehaviour
     /// <param name="to">Target scriptable object</param>
     public void CopyData(MeshDataContainer from, MeshDataContainer to)
     {
+        to.rotationFrequency = from.rotationFrequency;
+
+        to.moveSpeed = from.moveSpeed;
+        to.downSpeed = from.downSpeed;
+        to.moveStyle = from.moveStyle;
+
         to.numVertices = from.numVertices;
         to.numParts = from.numParts;
         to.length = from.length;
@@ -118,5 +139,18 @@ public class ShapeManager : MonoBehaviour
     public void SetTargetShape()
     {
         meshGenerator.LoadTargetMesh(targetMesh.vertices);
+        LoadTargetSettings();
+    }
+
+    /// <summary>
+    /// Loading knife settings for target mesh.
+    /// </summary>
+    public void LoadTargetSettings()
+    {
+        knifeControll.moveSpeed = targetMesh.moveSpeed;
+        knifeControll.downSpeed = targetMesh.downSpeed;
+        knifeControll.moveStyle = targetMesh.moveStyle;
+
+        rotateMetal.rotationsPerSecond = targetMesh.rotationFrequency;
     }
 }

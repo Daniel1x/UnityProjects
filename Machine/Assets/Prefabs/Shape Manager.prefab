@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4503344464083409294}
   - component: {fileID: 4503344464083409295}
   m_Layer: 0
-  m_Name: ShapeManager
+  m_Name: Shape Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -43,7 +43,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6296c3022d34a234a87d9e353747e772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  meshDataContainer: {fileID: 11400000, guid: 07ee049b6c7356447b42c86d55d61180, type: 2}
-  dataFrom: {fileID: 11400000, guid: 07ee049b6c7356447b42c86d55d61180, type: 2}
-  dataTo: {fileID: 11400000, guid: 555765e533659b44286e30cc0cf96474, type: 2}
+  meshDataContainer: {fileID: 11400000, guid: 835222d1adf37de43910cb68b73ea9e0, type: 2}
+  dataFrom: {fileID: 11400000, guid: 835222d1adf37de43910cb68b73ea9e0, type: 2}
+  dataTo: {fileID: 11400000, guid: 72e5a529fffffa34298c2b7952d5e010, type: 2}
   targetMesh: {fileID: 11400000, guid: 07ee049b6c7356447b42c86d55d61180, type: 2}
+  meshGenerator: {fileID: 0}
+  knifeControll: {fileID: 0}
+  rotateMetal: {fileID: 0}

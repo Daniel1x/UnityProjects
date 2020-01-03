@@ -12,7 +12,7 @@ public class ShapeManagerEditor : Editor
 
         ShapeManager shapeManager = (ShapeManager)target;
 
-        GUILayout.Label("Mesh to/from scriptable object");
+        GUILayout.Label("Mesh to/from data container");
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Save"))
         {

@@ -5,6 +5,13 @@ using UnityEngine;
 [CreateAssetMenu]
 public class MeshDataContainer : ScriptableObject
 {
+    [Header("Knife Settings")]
+    public float moveSpeed;
+    public float downSpeed;
+    public KnifeControll.MoveStyle moveStyle;
+
+    [Header("Mesh Settings")]
+    public float rotationFrequency;
     public int numVertices;
     public int numParts;
     public float length;
