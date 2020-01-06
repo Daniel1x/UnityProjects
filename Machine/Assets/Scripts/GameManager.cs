@@ -1,13 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     /// <summary>
     /// Shape manager reference.
     /// </summary>
-    public ShapeManager shapeManager;
+    [SerializeField]
+    private ShapeManager shapeManager;
+    /// <summary>
+    /// Field in which the RMS error is displayed.
+    /// </summary>
+    [SerializeField]
+    private Text errorText;
     /// <summary>
     /// Array of created levels.
     /// </summary>
@@ -33,29 +40,36 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// Reseting shape of current mesh.
+    /// </summary>
+    public void ResetThisLevel()
+    {
+        shapeManager.RestartMeshGenerator();
+        ResetErrorText();
+    }
+
+    /// <summary>
     /// Setting new target mesh shape and restarting shape manager.
     /// </summary>
     private void SetupShapeManager()
     {
         shapeManager.targetMesh = levels[actualLevel];
         shapeManager.RestartMeshGenerator();
+        ResetErrorText();
     }
 
+    /// <summary>
+    /// Reseting text of the field.
+    /// </summary>
+    private void ResetErrorText()
+    {
+        errorText.text = "RMSE";
+    }
+    
     private void Update()
     {
-        if (Input.GetMouseButtonDown(0))
-        {
-            if (Input.mousePosition.y / Screen.height >= 0.9f)
-            {
-                if (Input.mousePosition.x / Screen.width < 0.5f)
-                {
-                    shapeManager.RestartMeshGenerator();
-                }
-                else
-                {
-                    LoadNextLevel();
-                }
-            }
-        }
+        if (started) return;
+        LoadNextLevel();
+        started = true;
     }
 }

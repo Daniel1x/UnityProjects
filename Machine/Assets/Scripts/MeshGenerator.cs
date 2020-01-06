@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.IO;
 
 [RequireComponent(typeof(MeshFilter))]
@@ -68,7 +69,7 @@ public class MeshGenerator : MonoBehaviour
     /// <summary>
     /// Text box used to show RMS error.
     /// </summary>
-    public TextMesh textBox;
+    public Text textBox;
     
     /// <summary>
     /// Unchanged mesh.

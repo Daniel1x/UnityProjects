@@ -99,7 +99,7 @@ public class KnifeControll : MonoBehaviour
     private void DynamicMove()
     {
         // Setting movement on X axis.
-        downward = Input.GetMouseButton(0) ? -1f : 1f;
+        downward = Input.touchCount > 0 || Input.GetMouseButton(0) ? -1f : 1f;
         // Calculation of the new knife position
         CalculateNewPosition();
     }
@@ -110,8 +110,9 @@ public class KnifeControll : MonoBehaviour
     private void StableMove()
     {
         // Setting movement on X axis.
-        if (Input.GetMouseButton(0)) downward = (Input.mousePosition.x / Screen.width <= 0.5f) ? -1f : 1f;
-        else downward = 0;
+        downward = Input.touchCount > 0 || Input.GetMouseButton(0)
+            ? ((Input.touchCount > 0 ? Input.GetTouch(0).position.x : Input.mousePosition.x) / Screen.width <= 0.5f) ? -1f : 1f
+            : 0;
         // Calculating new position of knife.
         CalculateNewPosition();
     }
