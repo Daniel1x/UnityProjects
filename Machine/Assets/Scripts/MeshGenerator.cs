@@ -69,8 +69,12 @@ public class MeshGenerator : MonoBehaviour
     /// <summary>
     /// Text box used to show RMS error.
     /// </summary>
-    public Text textBox;
-    
+    public Text errorTextBox;
+    /// <summary>
+    /// Text box used to show message.
+    /// </summary>
+    public Text messageTextBox;
+
     /// <summary>
     /// Unchanged mesh.
     /// </summary>
@@ -371,7 +375,7 @@ public class MeshGenerator : MonoBehaviour
             error += Mathf.Pow((m1 - m2) * 10f, 2f);
         }
         calculatedRMSE = error / numVertices;
-        textBox.text = calculatedRMSE.ToString("0.000");
+        SetUpText(calculatedRMSE);
         KnifeControll.needToCheckShape = false;
     }
 
@@ -416,5 +420,17 @@ public class MeshGenerator : MonoBehaviour
         targetMesh.RecalculateNormals();
         targetMesh.name = "TargetMesh";
         targetMeshGO.GetComponent<MeshFilter>().mesh = targetMesh;
+    }
+
+    private void SetUpText(float errorVal)
+    {
+        errorTextBox.text = errorVal.ToString("0.000");
+        if (errorVal < 15f)
+        {
+            if (errorVal < 1f) messageTextBox.text = "A perfect match!";
+            else if (errorVal < 5f) messageTextBox.text = "A great fit!";
+            else messageTextBox.text = "Good fit!";
+        }
+        else messageTextBox.text = "You can do better!";
     }
 }

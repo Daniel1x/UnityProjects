@@ -15,7 +15,7 @@ MonoBehaviour:
   moveSpeed: 1
   downSpeed: 6
   moveStyle: 1
-  rotationFrequency: -3
+  rotationFrequency: 3
   numVertices: 16
   numParts: 100
   length: 0.1

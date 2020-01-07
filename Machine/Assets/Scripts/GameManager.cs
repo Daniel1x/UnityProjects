@@ -16,6 +16,11 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private Text errorText;
     /// <summary>
+    /// Field in which messages are displayed.
+    /// </summary>
+    [SerializeField]
+    private Text messageText;
+    /// <summary>
     /// Array of created levels.
     /// </summary>
     public MeshDataContainer[] levels;
@@ -23,11 +28,18 @@ public class GameManager : MonoBehaviour
     /// Loaded level.
     /// </summary>
     public int actualLevel = 0;
-
     /// <summary>
     /// If the game has been started.
     /// </summary>
     private bool started = false;
+    /// <summary>
+    /// Time between two clicks needed to close the application.
+    /// </summary>
+    private float quitTime = 1f;
+    /// <summary>
+    /// Time counter.
+    /// </summary>
+    private float actualTime = 10f;
 
     /// <summary>
     /// Loading next level from array.
@@ -64,12 +76,29 @@ public class GameManager : MonoBehaviour
     private void ResetErrorText()
     {
         errorText.text = "RMSE";
+        messageText.text = "";
     }
     
     private void Update()
     {
+        TryToQuit();
+
         if (started) return;
         LoadNextLevel();
         started = true;
+    }
+
+    /// <summary>
+    /// Closing the application after double-clicking the Escape button.
+    /// </summary>
+    private void TryToQuit()
+    {
+        actualTime += Time.deltaTime;
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (actualTime <= quitTime) Application.Quit();
+            actualTime = 0;
+        }
     }
 }

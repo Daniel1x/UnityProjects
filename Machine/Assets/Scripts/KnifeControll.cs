@@ -5,7 +5,7 @@ public class KnifeControll : MonoBehaviour
     /// <summary>
     /// Vertical speed of knife.
     /// </summary>
-    [Range(0.05f, 10f)] public float moveSpeed = 1f;
+    [Range(0.05f, 1.5f)] public float moveSpeed = 1f;
     /// <summary>
     /// Horizontal speed of knife.
     /// </summary>
