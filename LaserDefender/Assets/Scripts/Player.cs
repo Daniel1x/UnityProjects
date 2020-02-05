@@ -24,19 +24,15 @@ public class Player : MonoBehaviour
     private Inputs inputs;
     private Boundaries XBoundaries;
     private Boundaries YBoundaries;
-
-    [Range(1f, 20f)]
+    
     [SerializeField]
     private float speed = 10f;
-    [Range(0f, 1f)]
     [SerializeField]
     private float boundariesOffset = 0.5f;
     [SerializeField]
-    private GameObject laserPrefab;
-    [Range(1f, 100f)]
+    private GameObject laserPrefab = null;
     [SerializeField]
     private float projectileSpeed = 10f;
-    [Range(1f,3600f)]
     [SerializeField]
     private float roundsPerMinute = 60f;
     private float reloadTime;

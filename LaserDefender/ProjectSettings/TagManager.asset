@@ -5,6 +5,10 @@ TagManager:
   serializedVersion: 2
   tags:
   - Laser
+  - PlayerLaser
+  - EnemyLaser
+  - Enemy
+  - Shredder
   layers:
   - Default
   - TransparentFX
@@ -14,11 +18,11 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - PlayerLaser
+  - EnemyLaser
+  - Enemy
+  - Player
+  - Shredder
   - 
   - 
   - 
