@@ -9,15 +9,15 @@ EditorBuildSettings:
     path: Assets/ButterflyExample/Scenes/PhysicsTest.unity
     guid: 0d6c667a0873ea5479b85405031e765d
   - enabled: 1
-    path: Assets/ButterflyExample/Scenes/ButterflyMLAgents.unity
-    guid: a1212d6489b563f4bae054d03242acb8
-  - enabled: 1
-    path: Assets/ButterflyExample/Scenes/ButterflyStraightMLAgents.unity
-    guid: 1748c1c764e14e647a50e7fd1c37a9dc
+    path: Assets/ButterflyExample/Scenes/ButterflyToTarget.unity
+    guid: 2e8c60b0b4f402f439dd2895998914ce
   - enabled: 1
     path: Assets/ButterflyExample/Scenes/ButterflyStraightNew.unity
     guid: 7692091afc859574f8deddfe3397213f
   - enabled: 1
-    path: Assets/ButterflyExample/Scenes/ButterflyToTarget.unity
-    guid: 2e8c60b0b4f402f439dd2895998914ce
+    path: Assets/ButterflyExample/Scenes/ButterflyStraightMLAgents.unity
+    guid: 1748c1c764e14e647a50e7fd1c37a9dc
+  - enabled: 1
+    path: Assets/ButterflyExample/Scenes/ButterflyMLAgents.unity
+    guid: a1212d6489b563f4bae054d03242acb8
   m_configObjects: {}
