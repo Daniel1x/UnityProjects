@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class PlayerHealth : MonoBehaviour
 {
-    [SerializeField] private int health = 100;
+    [SerializeField] private int health = 1000;
     [SerializeField] private GameObject explosionPrefab = null;
     public int Health { get => health; set => health = value; }
 
@@ -14,7 +14,7 @@ public class EnemyHealth : MonoBehaviour
         if (!damageDealer) return;
         Hit(damageDealer);
     }
-
+    
     private void Hit(DamageDealer damageDealer)
     {
         health -= damageDealer.Damage;

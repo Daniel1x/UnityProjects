@@ -171,6 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   health: 100
+  explosionPrefab: {fileID: 138709771166282452, guid: a59895a2a6455b34ba3ea5b039c4ab5b,
+    type: 3}
 --- !u!114 &2299667198948175389
 MonoBehaviour:
   m_ObjectHideFlags: 0

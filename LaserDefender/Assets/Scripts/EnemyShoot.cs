@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemyShoot : MonoBehaviour
 {
-    [SerializeField] private GameObject laserPrefab;
+    [SerializeField] private GameObject laserPrefab = null;
     [SerializeField] private float timer;
     [SerializeField] private float minTime = 0.5f;
     [SerializeField] private float maxTime = 2f;
