@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
+    [SerializeField] private int shipScoreValue = 150;
     [SerializeField] private int health = 100;
     [SerializeField] private GameObject explosionPrefab = null;
-    public int Health { get => health; set => health = value; }
+    [SerializeField] private AudioClip deathSound = null;
+    [SerializeField] [Range(0f, 1f)] private float deathSoundVolume = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -21,9 +23,21 @@ public class EnemyHealth : MonoBehaviour
         damageDealer.Hit();
         if (health <= 0)
         {
-            GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
-            Destroy(explosion, 1f);
-            Destroy(gameObject);
+            Die();
         }
+    }
+
+    private void Die()
+    {
+        Explode();
+        FindObjectOfType<GameSession>().AddToScore(shipScoreValue);
+        Destroy(gameObject);
+    }
+
+    private void Explode()
+    {
+        GameObject explosion = Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        Destroy(explosion, 1f);
+        AudioSource.PlayClipAtPoint(deathSound, Camera.main.transform.position, deathSoundVolume);
     }
 }

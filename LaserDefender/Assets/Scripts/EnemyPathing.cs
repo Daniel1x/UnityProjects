@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyPathing : MonoBehaviour
 {
     private List<Transform> waypoints = new List<Transform>();
-    float enemySpeed = 1f;
+    private float enemySpeed = 1f;
     private int waypointIndex = 0;
 
     public void SetWaveConfig(WaveConfig waveConfig)

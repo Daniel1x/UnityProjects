@@ -5,13 +5,40 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private struct Inputs
+    private class Inputs
     {
         private float deltaX;
         private float deltaY;
 
         public float DeltaX { get => deltaX; set => deltaX = value; }
         public float DeltaY { get => deltaY; set => deltaY = value; }
+
+        public Inputs(float dX = 0f, float dY = 0f)
+        {
+            deltaX = dX;
+            deltaY = dY;
+        }
+
+        public Inputs(Vector3 v)
+        {
+            deltaX = v.x;
+            deltaY = v.y;
+        }
+
+        public static Inputs operator *(float val, Inputs inputs)
+        {
+            return new Inputs(val * inputs.deltaX, val * inputs.deltaY);
+        }
+
+        public static Inputs operator *(Inputs inputs, float val)
+        {
+            return new Inputs(val * inputs.deltaX, val * inputs.deltaY);
+        }
+
+        public static implicit operator Inputs(Vector3 v)
+        {
+            return new Inputs(v);
+        }
     }
     private struct Boundaries
     {
@@ -25,20 +52,19 @@ public class Player : MonoBehaviour
     private Boundaries XBoundaries;
     private Boundaries YBoundaries;
     
-    [SerializeField]
-    private float speed = 10f;
-    [SerializeField]
-    private float boundariesOffset = 0.5f;
-    [SerializeField]
-    private GameObject laserPrefab = null;
-    [SerializeField]
-    private float projectileSpeed = 10f;
-    [SerializeField]
-    private float roundsPerMinute = 60f;
-    private float reloadTime;
-    [SerializeField]
-    private bool needToUpgrade = true;
+    [SerializeField] private float speed = 10f;
+    [SerializeField] private float boundariesOffset = 0.5f;
+    [SerializeField] private GameObject laserPrefab = null;
+    [SerializeField] private float projectileSpeed = 10f;
+    [SerializeField] private float roundsPerMinute = 60f;
+    [SerializeField] private bool needToUpgrade = true;
+    //[SerializeField] private AudioClip[] soundEffects = null;
+    //[SerializeField] private bool changeSoundEffects = false;
+    [SerializeField] private AudioClip shootSound = null;
+    [SerializeField] [Range(0f, 1f)] private float shootVolume = 0.5f;
+
     private Coroutine firingCoroutine;
+    private float reloadTime;
     private bool firing = false;
 
     private void Start()
@@ -71,12 +97,12 @@ public class Player : MonoBehaviour
 
     private void Fire()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !firing)
+        if ((Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0)) && !firing)
         {
             firingCoroutine = StartCoroutine(FireContinuously());
             firing = true;
         }
-        else if (Input.GetKeyUp(KeyCode.Space) && firing)
+        else if ((Input.GetKeyUp(KeyCode.Space) || Input.GetMouseButtonUp(0)) && firing)
         {
             StopCoroutine(firingCoroutine);
             firing = false;
@@ -87,12 +113,28 @@ public class Player : MonoBehaviour
     {
         while (true)
         {
-            GameObject beam = Instantiate(laserPrefab, transform.position, Quaternion.identity) as GameObject;
-            beam.GetComponent<Rigidbody2D>().velocity = Vector2.up * projectileSpeed;
-            Destroy(beam, 4f);
+            Shoot();
             yield return new WaitForSeconds(reloadTime);
         }
     }
+
+    private void Shoot()
+    {
+        GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity) as GameObject;
+        laser.GetComponent<Rigidbody2D>().velocity = Vector2.up * projectileSpeed;
+        Destroy(laser, 5f);
+        //LoadNextSountEffect();
+        AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position, shootVolume);
+    }
+
+    /*private int soundID = -1;
+    private void LoadNextSountEffect()
+    {
+        if (!changeSoundEffects) return;
+        soundID++;
+        if (soundID > soundEffects.Length - 1) soundID = 0;
+        shootSound = soundEffects[soundID];
+    }*/
 
     private void Move()
     {
@@ -105,7 +147,7 @@ public class Player : MonoBehaviour
 
     Inputs GetInputs()
     {
-        Inputs i = new Inputs();
+        Inputs inputs = new Inputs();
         float multiplier = Time.deltaTime * speed;
         if (Input.GetMouseButton(0))
         {
@@ -116,25 +158,21 @@ public class Player : MonoBehaviour
             deltaPos.Normalize();
             if (distance < (deltaPos.magnitude * multiplier))
             {
-                deltaPos *= distance;
-                i.DeltaX = deltaPos.x;
-                i.DeltaY = deltaPos.y;
-                return i;
+                inputs = deltaPos * distance;
+                return inputs;
             }
             else
             {
-                i.DeltaX = deltaPos.x * multiplier;
-                i.DeltaY = deltaPos.y * multiplier;
-                return i;
+                inputs = deltaPos * multiplier;
+                return inputs;
             }
         }
         else
         {
-            i.DeltaX = Input.GetAxis("Horizontal");
-            i.DeltaY = Input.GetAxis("Vertical");
-            i.DeltaX *= multiplier;
-            i.DeltaY *= multiplier;
-            return i;
+            inputs.DeltaX = Input.GetAxis("Horizontal");
+            inputs.DeltaY = Input.GetAxis("Vertical");
+            inputs *= multiplier;
+            return inputs;
         }
     }
 }

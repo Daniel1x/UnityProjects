@@ -8,6 +8,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] List<WaveConfig> waveConfigs = new List<WaveConfig>();
     [SerializeField] float timeToNextWave = 5f;
     [SerializeField] bool looping = false;
+    [SerializeField] float spawnHeightOffset = 1f;
 
     private IEnumerator Start()
     {
@@ -22,8 +23,9 @@ public class EnemySpawner : MonoBehaviour
     {
         for(int enemyID = 0; enemyID < currentWave.NumberOfEnemies; enemyID++)
         {
-            GameObject enemy = Instantiate(currentWave.EnemyPrefab,
-                    currentWave.GetWaypoints()[0].transform.position, Quaternion.identity);
+            GameObject enemy = Instantiate(currentWave.EnemyPrefab, 
+                currentWave.GetWaypoints()[0].transform.position + spawnHeightOffset * Vector3.up, Quaternion.identity);
+
             enemy.GetComponent<EnemyPathing>().SetWaveConfig(currentWave);
             yield return new WaitForSeconds(currentWave.TimeBetweenSpawns);
         }

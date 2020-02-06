@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4169633025202354011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4169633025202354013}
+  - component: {fileID: 4169633025202354010}
+  m_Layer: 0
+  m_Name: EnemySpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4169633025202354013
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4169633025202354011}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4169633025202354010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4169633025202354011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ee46cac37001ad344974cc36f3fcba82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waveConfigs:
+  - {fileID: 11400000, guid: 0af140d6298a2ab41a7c7121a77923b3, type: 2}
+  - {fileID: 11400000, guid: 4bedcb77828917144af9d73d0297e730, type: 2}
+  - {fileID: 11400000, guid: 85a0a4c293de62f4bae920f4170cefbb, type: 2}
+  - {fileID: 11400000, guid: 497979c196b410142b6204af4e7b1c23, type: 2}
+  - {fileID: 11400000, guid: 27e07984bc8bdb3469bfe93d7e9cd3af, type: 2}
+  - {fileID: 11400000, guid: 9632b8db631705c43bd27daf17f63366, type: 2}
+  - {fileID: 11400000, guid: 429aca48e3168fc418df26b2277a0491, type: 2}
+  - {fileID: 11400000, guid: e6eaf0819cbc1c24cb0f6487aed4b703, type: 2}
+  - {fileID: 11400000, guid: 8522cb8ad609e2b4f96c01b6232ac48e, type: 2}
+  - {fileID: 11400000, guid: f8909c6cc0910f8468b1a2929af2afa8, type: 2}
+  timeToNextWave: 2
+  looping: 1
+  spawnHeightOffset: 6.2

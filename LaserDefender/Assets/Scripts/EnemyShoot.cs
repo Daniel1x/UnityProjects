@@ -11,6 +11,8 @@ public class EnemyShoot : MonoBehaviour
     [SerializeField] private float maxTime = 2f;
     [SerializeField] private bool isShooting = false;
     [SerializeField] private float projectileSpeed = 10f;
+    [SerializeField] private AudioClip shootSound = null;
+    [SerializeField] [Range(0f, 1f)] private float shootVolume = 0.5f;
 
     private IEnumerator Start()
     {
@@ -31,5 +33,6 @@ public class EnemyShoot : MonoBehaviour
     {
         GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.Euler(180f, 0f, 0f));
         laser.GetComponent<Rigidbody2D>().velocity = Vector2.down * projectileSpeed;
+        AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position, shootVolume);
     }
 }
