@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Attacker : MonoBehaviour
 {
-    [SerializeField] [Range(0f, 5f)] private float speed = 1f;
+    [SerializeField] [Range(0f, 2f)] private float speed = 1f;
     [SerializeField] [Range(0f, 2f)] private float spawnTime = 1f;
     private bool isWalking = false;
 
@@ -24,5 +24,10 @@ public class Attacker : MonoBehaviour
     {
         if (!isWalking) return;
         transform.Translate(Vector2.left * Time.deltaTime * speed);
+    }
+
+    public void SetMovementSpeed(float speed)
+    {
+        this.speed = speed;
     }
 }
