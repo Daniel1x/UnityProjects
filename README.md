@@ -6,29 +6,32 @@ Games and projects made in Unity.
   
 2. **BlockBreaker**
   * Contains a game created in the style of arkanoid.
+  
+3. **LaserDefender**
+  * A game based on the Space Invaders theme.
 
-3. **CannonBall**
+4. **CannonBall**
   * Hyper casual game prototype. Based on the use of cannons and bows to reach maximum height by the projectile.
   
-4. **GenericAlgorithms3D**
+5. **GenericAlgorithms3D**
   * A project showing the use of a genetic algorithm to control an agent.
 
-5. **Machine**
+6. **Machine**
   * Hyper casual game prototype. Based on the mechanics of metalworking using a lathe.
 
-6. **MapGeneration**
+7. **MapGeneration**
   * A simple project showing the possibility of generating a mesh using a script.
 
-7. **Q_Learning_CarControll**
+8. **Q_Learning_CarControll**
   * An advanced project showing the possibilities of controlling a vehicle using three implemented machine learning algorithms.
 
-8. **Slider**
+9. **Slider**
   * Project of a simple game that uses effects based on sound and collisions of objects.
 
-9. **SpaceHeroes**
+10. **SpaceHeroes**
   * A game project based on the theme of space, gravity, astronomy and star wars. Using a physics engine to calculate interactions between planets.
 
-10. **UnitySDK**
+11. **UnitySDK**
   * A project containing the implementation of air resistance physics and an example of its use.
   * The project also includes examples of how to train an agent using the implemented air resistance. The agent's learning model was based on the ML-Agents tool.
   * Based on Unity ML-Agents project.* https://github.com/Unity-Technologies/ml-agents
