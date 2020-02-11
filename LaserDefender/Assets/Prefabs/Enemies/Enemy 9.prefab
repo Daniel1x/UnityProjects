@@ -172,7 +172,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shipScoreValue: 150
-  health: 100
+  health: 500
   explosionPrefab: {fileID: 138709771166282452, guid: a59895a2a6455b34ba3ea5b039c4ab5b,
     type: 3}
   deathSound: {fileID: 8300000, guid: f9c514a14753a5f47a0f937529ffd016, type: 3}

@@ -146,6 +146,7 @@ MonoBehaviour:
     type: 3}
   projectileSpeed: 10
   roundsPerMinute: 240
+  lasersPerShoot: 3
   needToUpgrade: 1
   shootSound: {fileID: 8300000, guid: 0bec90ed3ac60c14dbdebe54e95d1829, type: 3}
   shootVolume: 0.1

@@ -57,6 +57,7 @@ public class Player : MonoBehaviour
     [SerializeField] private GameObject laserPrefab = null;
     [SerializeField] private float projectileSpeed = 10f;
     [SerializeField] private float roundsPerMinute = 60f;
+    [SerializeField] [Range(1, 30)] private int lasersPerShoot = 1;
     [SerializeField] private bool needToUpgrade = true;
     //[SerializeField] private AudioClip[] soundEffects = null;
     //[SerializeField] private bool changeSoundEffects = false;
@@ -120,21 +121,22 @@ public class Player : MonoBehaviour
 
     private void Shoot()
     {
-        GameObject laser = Instantiate(laserPrefab, transform.position, Quaternion.identity) as GameObject;
-        laser.GetComponent<Rigidbody2D>().velocity = Vector2.up * projectileSpeed;
-        Destroy(laser, 5f);
-        //LoadNextSountEffect();
+        InstantiateLasers(lasersPerShoot);
         AudioSource.PlayClipAtPoint(shootSound, Camera.main.transform.position, shootVolume);
     }
 
-    /*private int soundID = -1;
-    private void LoadNextSountEffect()
+    private void InstantiateLasers(int numOfLasers)
     {
-        if (!changeSoundEffects) return;
-        soundID++;
-        if (soundID > soundEffects.Length - 1) soundID = 0;
-        shootSound = soundEffects[soundID];
-    }*/
+        float angle = 60f / numOfLasers;
+        for (int i = 0; i < numOfLasers; i++)
+        {
+            int side = (i % 2 == 0) ? 1 : -1;
+            Quaternion laserRotation = Quaternion.Euler(0f, 0f, (i + 1) / 2 * side * angle);
+            GameObject laser = Instantiate(laserPrefab, transform.position, laserRotation * Quaternion.identity) as GameObject;
+            laser.GetComponent<Rigidbody2D>().velocity = laserRotation * (Vector2.up * projectileSpeed);
+            Destroy(laser, 5f);
+        }
+    }
 
     private void Move()
     {
