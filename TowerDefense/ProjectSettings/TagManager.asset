@@ -3,7 +3,11 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Attacker
+  - Defender
+  - Projectile
+  - Trophy
   layers:
   - Default
   - TransparentFX
@@ -13,10 +17,10 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
-  - 
-  - 
+  - Attacker
+  - Defender
+  - Projectile
+  - Trophy
   - 
   - 
   - 
@@ -47,11 +51,17 @@ TagManager:
   - name: Defenders
     uniqueID: 1357652121
     locked: 0
+  - name: Stars
+    uniqueID: 1046697315
+    locked: 0
   - name: Enemies
     uniqueID: 2933551195
     locked: 0
-  - name: Stars
-    uniqueID: 1046697315
+  - name: Projectiles
+    uniqueID: 1757328735
+    locked: 0
+  - name: VFX
+    uniqueID: 1021357537
     locked: 0
   - name: BackgroundElements
     uniqueID: 3105481811
