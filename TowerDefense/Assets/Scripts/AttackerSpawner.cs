@@ -6,16 +6,15 @@ using UnityEngine;
 public class AttackerSpawner : MonoBehaviour
 {
     [SerializeField] private bool spawn = true;
-    [SerializeField] Attacker lizard = null;
+    [SerializeField] Attacker[] attackers = null;
     [SerializeField] float minSpawnTime = 1f;
     [SerializeField] float maxSpawnTime = 5f;
-
-    private Vector3 positionOffset = new Vector3(0.5f, 0.25f, 0f);
+    
     private Vector2 spawnPosition;
 
     private void Start()
     {
-        spawnPosition = transform.position + positionOffset;
+        spawnPosition = transform.position;
         StartCoroutine(SpawnContinuously());
     }
 
@@ -30,7 +29,7 @@ public class AttackerSpawner : MonoBehaviour
     IEnumerator SpawnEnemy(float spawnTime)
     {
         yield return new WaitForSeconds(spawnTime);
-        SpawnOneEnemy(lizard);
+        SpawnOneEnemy(attackers[UnityEngine.Random.Range(0, attackers.Length)]);
     }
 
     private void SpawnOneEnemy(Attacker enemyPrefab)

@@ -6,7 +6,6 @@ using UnityEngine;
 public class DefenderSpawner : MonoBehaviour
 {
     [SerializeField] private Defender defenderPrefab = null;
-    [SerializeField] private bool[,] playArea = new bool[7, 5];
     [SerializeField] private MoneyDisplay moneyDisplay;
     private bool spawnEnabled = false;
 
@@ -17,12 +16,9 @@ public class DefenderSpawner : MonoBehaviour
 
     private void SpawnDefender(Vector2 spawnPosition)
     {
-        int xCord = (int)spawnPosition.x - 1;
-        int yCord = (int)spawnPosition.y - 1;
-        if (!playArea[xCord, yCord] && defenderPrefab)
+        if (defenderPrefab)
         {
             Defender defender = Instantiate(defenderPrefab, spawnPosition, Quaternion.identity, transform);
-            playArea[xCord, yCord] = true;
         }
     }
     

@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 8203720152131793182}
   - component: {fileID: 1804273433623764704}
   - component: {fileID: 3982367225201555029}
-  m_Layer: 0
+  - component: {fileID: 2837860431081408185}
+  m_Layer: 9
   m_Name: Gnome
-  m_TagString: Untagged
+  m_TagString: Defender
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,6 +163,20 @@ MonoBehaviour:
   gun: {fileID: 807037139834021692}
   myLaneSpawner: {fileID: 0}
   animator: {fileID: 0}
+--- !u!114 &2837860431081408185
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365936848074654658}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a384bd52cedac3a4ab30a50559407928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 25
+  deathVFX: {fileID: 1906222994913036, guid: 740c2b3187d56c341b8cb78e8aa925c5, type: 3}
 --- !u!1 &7113715332792762741
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +186,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 807037139834021692}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Gun
   m_TagString: Untagged
   m_Icon: {fileID: 0}

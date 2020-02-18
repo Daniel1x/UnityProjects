@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class Defender : MonoBehaviour
 {
     [SerializeField] private int unitCost = 100;

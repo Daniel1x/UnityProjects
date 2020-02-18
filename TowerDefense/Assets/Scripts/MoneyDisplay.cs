@@ -42,4 +42,21 @@ public class MoneyDisplay : MonoBehaviour
             return true;
         }
     }
+
+    public int moneyPerSecond = 5;
+    private float timer = 0f;
+    private void CountTime(int moneyPerSecond)
+    {
+        timer += Time.deltaTime;
+        if (timer >= 1f)
+        {
+            timer -= 1f;
+            AddMoney(moneyPerSecond);
+        }
+    }
+
+    private void Update()
+    {
+        CountTime(moneyPerSecond);
+    }
 }
