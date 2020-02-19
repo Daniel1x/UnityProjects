@@ -5,17 +5,26 @@ using UnityEngine;
 
 public class AttackerSpawner : MonoBehaviour
 {
-    [SerializeField] private bool spawn = true;
-    [SerializeField] Attacker[] attackers = null;
-    [SerializeField] float minSpawnTime = 1f;
-    [SerializeField] float maxSpawnTime = 5f;
-    
+    private bool spawn = true;
+    public bool Spawn { set => spawn = value; }
+    [SerializeField] private Attacker[] attackers = null;
+    [SerializeField] private float minSpawnTime = 1f;
+    [SerializeField] private float maxSpawnTime = 5f;
+    public float MaxSpawnTime { get => maxSpawnTime; }
     private Vector2 spawnPosition;
 
     private void Start()
     {
+        SetUpDifficulty();
         spawnPosition = transform.position;
         StartCoroutine(SpawnContinuously());
+    }
+
+    private void SetUpDifficulty()
+    {
+        float difficulty = PlayerPrefsController.GetDifficulty();
+        minSpawnTime -= minSpawnTime * difficulty;
+        maxSpawnTime -= maxSpawnTime * difficulty;
     }
 
     IEnumerator SpawnContinuously()

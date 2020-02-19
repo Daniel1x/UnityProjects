@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,12 +8,22 @@ using UnityEngine.UI;
 public class MoneyDisplay : MonoBehaviour
 {
     [SerializeField] private int money = 250;
+    [SerializeField] private int moneyPerSecond = 5;
+    private float timer = 0f;
     private Text moneyBox;
 
     private void Start()
     {
+        SetUpDifficulty();
         moneyBox = GetComponent<Text>();
         UpdateMoneyDisplay();
+    }
+
+    private void SetUpDifficulty()
+    {
+        float difficulty = PlayerPrefsController.GetDifficulty();
+        difficulty = (float)Math.Round(difficulty, 2);
+        money -= (int)(difficulty * money);
     }
 
     private void UpdateMoneyDisplay()
@@ -42,9 +53,7 @@ public class MoneyDisplay : MonoBehaviour
             return true;
         }
     }
-
-    public int moneyPerSecond = 5;
-    private float timer = 0f;
+    
     private void CountTime(int moneyPerSecond)
     {
         timer += Time.deltaTime;
