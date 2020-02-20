@@ -7,6 +7,11 @@ public class Health : MonoBehaviour
 {
     [SerializeField] private float health = 100f;
     [SerializeField] private GameObject deathVFX = null;
+    private const string VFX_PARENT_NAME = "VFX";
+    private static GameObject VFXParent = null;
+    private static bool VFXParentCreated = false;
+    private MoneyDisplay moneyDisplay = null;
+    private bool moneyDisplayFound = false;
 
     public void DealDamage(float damage)
     {
@@ -25,10 +30,46 @@ public class Health : MonoBehaviour
         Destroy(gameObject);
     }
 
+    private void AddMoney()
+    {
+        if (CompareTag("Attacker"))
+        {
+            FindMoneyDisplay();
+            Attacker attacker = GetComponent<Attacker>();
+            moneyDisplay.AddMoney(attacker.deathIncome);
+        }
+    }
+
+    private void FindMoneyDisplay()
+    {
+        if (!moneyDisplayFound)
+        {
+            moneyDisplay = FindObjectOfType<MoneyDisplay>();
+            if (moneyDisplay) moneyDisplayFound = true;
+        }
+    }
+
     private void TriggerDeathVFX()
     {
         if (!deathVFX) return;
-        GameObject particle = Instantiate(deathVFX, transform.position, Quaternion.identity);
+        GameObject particle = Instantiate(deathVFX, transform.position, Quaternion.identity) as GameObject;
+        HookUpVFXParent(particle);
         Destroy(particle, 1f);
+        AddMoney();
+    }
+
+    private void HookUpVFXParent(GameObject particle)
+    {
+        CreateVFXParent();
+        particle.transform.parent = VFXParent.transform;
+    }
+
+    private void CreateVFXParent()
+    {
+        if (!VFXParentCreated || !VFXParent)
+        {
+            VFXParentCreated = true;
+            VFXParent = new GameObject(VFX_PARENT_NAME);
+        }
     }
 }

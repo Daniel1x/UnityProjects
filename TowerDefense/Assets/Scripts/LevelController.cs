@@ -14,12 +14,14 @@ public class LevelController : MonoBehaviour
     private int numberOfAttackers = 0;
     private bool levelTimerFinished = false;
     private bool gameFinished = false;
+    private AudioSource audioSource = null;
 
     private void Start()
     {
         if (winCanvas != null) winCanvas.SetActive(false);
         if (loseCanvas != null) loseCanvas.SetActive(false);
         attackerSpawners = FindObjectsOfType<AttackerSpawner>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -60,7 +62,7 @@ public class LevelController : MonoBehaviour
 
     IEnumerator WaitForSpawners()
     {
-        endGameDelay = attackerSpawners[0].MaxSpawnTime;
+        endGameDelay = AttackerSpawner.maxSpawnTimeOfAttackers;
         yield return new WaitForSeconds(endGameDelay);
         if (numberOfAttackers <= 0 && levelTimerFinished)
         {
@@ -72,7 +74,7 @@ public class LevelController : MonoBehaviour
     {
         gameFinished = true;
         if (winCanvas != null) winCanvas.SetActive(true);
-        GetComponent<AudioSource>().Play();
+        audioSource.Play();
         FindObjectOfType<LevelLoader>().LoadNextSceneWithDelay(loadNextSceneDelay);
     }
 

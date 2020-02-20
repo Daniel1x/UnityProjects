@@ -9,6 +9,9 @@ public class Shooter : MonoBehaviour
     [SerializeField] private Transform gun = null;
     [SerializeField] private AttackerSpawner myLaneSpawner = null;
     [SerializeField] private Animator animator = null;
+    private const string PROJECTILE_PARENT_NAME = "Projectiles";
+    private static GameObject projectileParent = null;
+    private static bool projectileParentCreated = false;
 
     private void Start()
     {
@@ -18,7 +21,23 @@ public class Shooter : MonoBehaviour
 
     public void Fire()
     {
-        Projectile projectile = Instantiate(projectilePrefab, gun.position, Quaternion.identity, transform);
+        Projectile projectile = Instantiate(projectilePrefab, gun.position, Quaternion.identity, transform) as Projectile;
+        HookUpProjectileParent(projectile);
+    }
+
+    private void HookUpProjectileParent(Projectile projectile)
+    {
+        CreateProjectileParent();
+        projectile.transform.parent = projectileParent.transform;
+    }
+
+    private void CreateProjectileParent()
+    {
+        if (!projectileParentCreated || !projectileParent)
+        {
+            projectileParentCreated = true;
+            projectileParent = new GameObject(PROJECTILE_PARENT_NAME);
+        }
     }
 
     private void SetLane()

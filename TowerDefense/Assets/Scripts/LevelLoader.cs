@@ -31,7 +31,9 @@ public class LevelLoader : MonoBehaviour
 
     public void LoadNextScene()
     {
-        SceneManager.LoadScene(currentSceneIndex + 1);
+        if (SceneManager.GetActiveScene().buildIndex == 11)
+            LoadFirstLevel();
+        else SceneManager.LoadScene(currentSceneIndex + 1);
     }
 
     public void ReloadThisLevel()

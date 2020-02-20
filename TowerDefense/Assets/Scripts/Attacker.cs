@@ -7,9 +7,10 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class Attacker : MonoBehaviour
 {
-    [SerializeField] [Range(0f, 2f)] private float speed = 1f;
-    [SerializeField] [Range(0, 100)] private int damage = 25;
+    private float speed = 1f;
+    [SerializeField] [Range(0, 250)] private int damage = 25;
     [SerializeField] [Range(0, 10)] public int baseDamage = 1;
+    [SerializeField] [Range(0, 500)] public int deathIncome = 1;
     private Animator animator = null;
     private GameObject target = null;
 

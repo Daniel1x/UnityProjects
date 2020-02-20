@@ -520,7 +520,7 @@ RectTransform:
   - {fileID: 6047734476870703094}
   - {fileID: 3271179272367003129}
   - {fileID: 92707232192490637}
-  m_Father: {fileID: 6885592559415922638}
+  m_Father: {fileID: 2686108894118741847}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -825,7 +825,7 @@ Transform:
   - {fileID: 2173707150909117232}
   - {fileID: 5347852720565471493}
   - {fileID: 6885592559458551957}
-  m_Father: {fileID: 6885592559415922638}
+  m_Father: {fileID: 2686108894118741847}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6885592559338958662
@@ -900,7 +900,7 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6885592559415922638}
+  - component: {fileID: 2686108894118741847}
   m_Layer: 5
   m_Name: Buttons
   m_TagString: Untagged
@@ -908,7 +908,7 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6885592559415922638
+--- !u!4 &2686108894118741847
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

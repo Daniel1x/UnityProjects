@@ -11,6 +11,8 @@ public class GameTimer : MonoBehaviour
     private float timer = 0f;
     private Slider slider;
     private bool endOfTime = false;
+    private float percentageTimeLevel = 0;
+    public float PercentageTimeLevel { get => percentageTimeLevel; }
 
     private void Start()
     {
@@ -27,9 +29,9 @@ public class GameTimer : MonoBehaviour
     private void Update()
     {
         if (endOfTime) return;
-        float value = CalculateSliderValue();
-        slider.value = value;
-        if (value >= 1f)
+        percentageTimeLevel = CalculateSliderValue();
+        slider.value = percentageTimeLevel;
+        if (percentageTimeLevel >= 1f)
         {
             EndGame();
         }
