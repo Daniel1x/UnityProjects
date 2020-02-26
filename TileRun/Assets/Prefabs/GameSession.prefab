@@ -300,5 +300,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerLives: 5
   score: 0
+  lifeCost: 20
+  coinValue: 100
   livesTextBox: {fileID: 1759897380}
   scoreTextBox: {fileID: 1667076762}

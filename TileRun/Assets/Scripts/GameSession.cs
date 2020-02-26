@@ -9,6 +9,8 @@ public class GameSession : MonoBehaviour
 {
     [SerializeField] private int playerLives = 5;
     [SerializeField] private int score = 0;
+    [SerializeField] private int lifeCost = 10;
+    [SerializeField] private int coinValue = 100;
     [SerializeField] private Text livesTextBox = null;
     [SerializeField] private Text scoreTextBox = null;
     public static GameSession activeGameSession = null;
@@ -66,7 +68,18 @@ public class GameSession : MonoBehaviour
     public void AddCoin(int howMany)
     {
         score += howMany;
+        BuyLives();
         UpdateScoreText();
+    }
+
+    private void BuyLives()
+    {
+        if (score >= lifeCost)
+        {
+            score -= lifeCost;
+            playerLives++;
+            UpdateLivesText();
+        }
     }
 
     private void UpdateLivesText()
@@ -76,7 +89,7 @@ public class GameSession : MonoBehaviour
 
     private void UpdateScoreText()
     {
-        scoreTextBox.text = score.ToString();
+        scoreTextBox.text = (score * coinValue).ToString();
     }
 
     public void UpdateTexts()

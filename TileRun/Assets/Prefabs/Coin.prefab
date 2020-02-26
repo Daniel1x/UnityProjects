@@ -72,7 +72,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1755188135
-  m_SortingLayer: 6
+  m_SortingLayer: 9
   m_SortingOrder: 0
   m_Sprite: {fileID: -2322180950842035098, guid: 5a1ef97e7856b2f42a53c1f7a539349c,
     type: 3}
@@ -133,7 +133,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a351460bc95efe48a0765ad8d91de68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  coinPickupSound: {fileID: 8300000, guid: 2fff4235298d6d14591459a008848e2a, type: 3}
+  volume: 0.5
+  coinPickupSound: {fileID: 8300000, guid: 368bb82863082c3488587d1352225389, type: 3}
 --- !u!82 &4525246327547531646
 AudioSource:
   m_ObjectHideFlags: 0
@@ -144,10 +145,10 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 2fff4235298d6d14591459a008848e2a, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 368bb82863082c3488587d1352225389, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.25
-  m_Pitch: 1
+  m_Volume: 0.5
+  m_Pitch: 2
   Loop: 0
   Mute: 0
   Spatialize: 0
