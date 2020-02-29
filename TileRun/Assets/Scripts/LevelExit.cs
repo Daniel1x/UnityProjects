@@ -31,10 +31,16 @@ public class LevelExit : MonoBehaviour
     private IEnumerator LoadNextLevel()
     {
         yield return new WaitForSeconds(levelLoadDelay);
-        Destroy(FindObjectOfType<ScenePersist>().gameObject);
+        DestroyScenePersist();
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
         if (currentSceneIndex >= SceneManager.sceneCountInBuildSettings - 1) currentSceneIndex = -1;
         SceneManager.LoadScene(currentSceneIndex + 1);
+    }
+
+    private void DestroyScenePersist()
+    {
+        ScenePersist scenePersist = FindObjectOfType<ScenePersist>();
+        if (scenePersist) Destroy(scenePersist.gameObject);
     }
 
     private void CloseDoors()

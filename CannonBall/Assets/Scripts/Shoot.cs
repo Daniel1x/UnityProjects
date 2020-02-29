@@ -6,7 +6,7 @@ public class Shoot : MonoBehaviour
 {
     public GameObject cannonBall;
     public float power;
-    Follow cam;
+    private Follow cam;
 
     private void Start()
     {

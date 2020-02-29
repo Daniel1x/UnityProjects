@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
     private void Jump()
     {
         if (!feetCollider2D.IsTouchingLayers(LayerMask.GetMask(Names.FOREGROUND_LAYER_NAME))) { return; }
-        if (CrossPlatformInputManager.GetButtonDown("Jump"))
+        if (CrossPlatformInputManager.GetButton("Jump"))
         {
             Vector2 velocity = new Vector2(rb.velocity.x, jumpPower);
             rb.velocity = velocity;
