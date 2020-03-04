@@ -8,12 +8,18 @@ public class CreateDesiredCylinder : ScriptableWizard
 {
     public Material material;
     public string gameObjectName = "GenericCylinder";
-    [Range(3, 36)] public int numberOfVerticesPerLayer = 5;
-    [Range(2, 1024)] public int numberOfLayers = 3;
-    [Range(0.0001f, 10f)] public float hightOfOneLayer = 0.1f;
-    [Range(0.01f, 10f)] public float widthOfCylinder = 1f;
-    [Range(0.001f, 1f)] public float midpointHeightDifference = 0.1f;
+    public string gameObjectTag = "GeneratedCylinder";
+    public Vector3 spawnPosition = new Vector3();
+    public Vector3 spawnRotationEuler = new Vector3();
+    [Range(3, 36)] public int numberOfVerticesPerLayer = 12;
+    [Range(2, 1024)] public int numberOfLayers = 10;
+    [Range(0.025f, 10f)] public float hightOfOneLayer = 0.1f;
+    [Range(0.025f, 100f)] public float widthOfCylinder = 1f;
+    [Range(0f, 10f)] public float midpointHeightDifference = 0.1f;
+    [Range(-2f, 2f)] public float rotationSpeed = 0f;
     public bool markMeshAsDynamic = true;
+    public bool addRigidbody = false;
+    public bool isRigidbodyKinematic = true;
 
     private const string meshName = "GenericMesh";
     private Vector3[] vertices;
@@ -31,16 +37,31 @@ public class CreateDesiredCylinder : ScriptableWizard
     {
         isValid = false;
         helpString = "Remember to choose the material!";
+        material = FindMaterialWithName("Metal");
     }
 
     private void OnWizardCreate()
     {
         GameObject cylinderGO = new GameObject();
         cylinderGO.name = gameObjectName;
+        cylinderGO.tag = gameObjectTag;
+
+        cylinderGO.transform.position = spawnPosition;
+        cylinderGO.transform.rotation = Quaternion.Euler(spawnRotationEuler);
 
         MeshFilter meshFilter = cylinderGO.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = cylinderGO.AddComponent<MeshRenderer>();
         MeshCollider meshCollider = cylinderGO.AddComponent<MeshCollider>();
+        RotateMetal rotateMetal = cylinderGO.AddComponent<RotateMetal>();
+
+        rotateMetal.rotationsPerSecond = rotationSpeed;
+
+        if(addRigidbody)
+        {
+            Rigidbody rigidbody = cylinderGO.AddComponent<Rigidbody>();
+            rigidbody.isKinematic = isRigidbodyKinematic;
+            if (!isRigidbodyKinematic) meshCollider.convex = true;
+        }
 
         if (material) meshRenderer.material = material;
 
@@ -153,5 +174,14 @@ public class CreateDesiredCylinder : ScriptableWizard
     private void OnWizardUpdate()
     {
         isValid = material ? true : false;
+    }
+
+    private Material FindMaterialWithName(string name)
+    {
+        Material material = null;
+        Material[] materials = Resources.FindObjectsOfTypeAll<Material>();
+        for (int i = 0; i < materials.Length; i++)
+            if (materials[i].name == "Metal") material = materials[i];
+        return material;
     }
 }

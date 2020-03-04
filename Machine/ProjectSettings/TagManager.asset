@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - GeneratedMesh
+  - Knife
+  - GeneratedKnife
+  - GeneratedCylinder
   layers:
   - Default
   - TransparentFX
@@ -14,8 +17,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - GeneratedMesh
+  - GeneratedKnife
   - 
   - 
   - 
@@ -41,4 +44,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: GeneratedMesh
+    uniqueID: 3367913909
+    locked: 0
+  - name: GeneratedKnife
+    uniqueID: 2820575821
     locked: 0

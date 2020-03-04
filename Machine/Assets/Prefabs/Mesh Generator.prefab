@@ -122,7 +122,8 @@ MonoBehaviour:
   layers: 1
   enableShapeModification: 0
   calculatedRMSE: 3.4028235e+38
-  textBox: {fileID: 0}
+  errorTextBox: {fileID: 0}
+  messageTextBox: {fileID: 0}
 --- !u!114 &3104008133191264169
 MonoBehaviour:
   m_ObjectHideFlags: 0
