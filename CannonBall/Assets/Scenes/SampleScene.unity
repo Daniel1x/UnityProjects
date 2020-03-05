@@ -342,6 +342,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BowWithArrow (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 9197338336092741988, guid: f07b4acb9d129924f8348559d7c6436f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07b4acb9d129924f8348559d7c6436f, type: 3}
 --- !u!1001 &532056856
@@ -410,6 +415,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BowWithArrow (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9197338336092741988, guid: f07b4acb9d129924f8348559d7c6436f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07b4acb9d129924f8348559d7c6436f, type: 3}
@@ -532,11 +542,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: aaa2c939c0359ac4dbce3f49e8b90252, type: 3}
---- !u!4 &540128001 stripped
+--- !u!4 &540128001
 Transform:
+  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 540128000}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699675490}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1245972055}
+  m_Father: {fileID: 1133872522}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &643668750
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -608,6 +628,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BowWithArrow (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9197338336092741988, guid: f07b4acb9d129924f8348559d7c6436f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07b4acb9d129924f8348559d7c6436f, type: 3}
@@ -683,6 +708,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: BowWithArrow (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 9197338336092741988, guid: f07b4acb9d129924f8348559d7c6436f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07b4acb9d129924f8348559d7c6436f, type: 3}
 --- !u!1 &678746538
@@ -751,6 +781,22 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &699675490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 540128000}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 540128001}
+  m_Layer: 0
+  m_Name: Fixed Joystick (Missing Prefab)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -1186,6 +1232,36 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1245972054
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 540128000}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1245972055}
+  m_Layer: 0
+  m_Name: Missing Prefab (Dummy)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1245972055
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 540128000}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1245972054}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 540128001}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1833118387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1257,6 +1333,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BowWithArrow (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 9197338336092741988, guid: f07b4acb9d129924f8348559d7c6436f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07b4acb9d129924f8348559d7c6436f, type: 3}
@@ -1414,6 +1495,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BowWithArrow
+      objectReference: {fileID: 0}
+    - target: {fileID: 9197338336092741988, guid: f07b4acb9d129924f8348559d7c6436f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f07b4acb9d129924f8348559d7c6436f, type: 3}

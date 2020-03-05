@@ -52,9 +52,14 @@ public class CreateDesiredCylinder : ScriptableWizard
         MeshFilter meshFilter = cylinderGO.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = cylinderGO.AddComponent<MeshRenderer>();
         MeshCollider meshCollider = cylinderGO.AddComponent<MeshCollider>();
-        RotateMetal rotateMetal = cylinderGO.AddComponent<RotateMetal>();
+        GenericMeshInfo genericMeshInfo = cylinderGO.AddComponent<GenericMeshInfo>();
+        genericMeshInfo.SetInformations(numberOfVerticesPerLayer, numberOfLayers, hightOfOneLayer, widthOfCylinder, midpointHeightDifference);
 
-        rotateMetal.rotationsPerSecond = rotationSpeed;
+        if (rotationSpeed != 0)
+        {
+            RotateMetal rotateMetal = cylinderGO.AddComponent<RotateMetal>();
+            rotateMetal.rotationsPerSecond = rotationSpeed;
+        }
 
         if(addRigidbody)
         {
@@ -93,7 +98,6 @@ public class CreateDesiredCylinder : ScriptableWizard
     private void CreateVertices()
     {
         vertices = new Vector3[numberOfVerticesPerLayer * numberOfLayers + 2];
-        triangles = new int[6 * numberOfVerticesPerLayer * numberOfLayers];
         for (int layer = 0; layer < numberOfLayers; layer++)
         {
             for (int vertex = 0; vertex < numberOfVerticesPerLayer; vertex++)
@@ -112,6 +116,7 @@ public class CreateDesiredCylinder : ScriptableWizard
 
     private void CreateTriangles()
     {
+        triangles = new int[6 * numberOfVerticesPerLayer * numberOfLayers];
         int triangleID = 0;
         for (int part = 0; part < numberOfLayers; part++)
         {
