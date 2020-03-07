@@ -5,7 +5,7 @@ public class FollowKnife : MonoBehaviour
     /// <summary>
     /// Knife gameobject to follow.
     /// </summary>
-    public GameObject knife;
+    private GenericKnife knife;
     /// <summary>
     /// New position of camera.
     /// </summary>
@@ -13,6 +13,7 @@ public class FollowKnife : MonoBehaviour
     
     private void Start()
     {
+        knife = FindObjectOfType<GenericKnife>();
         UpdatePosition();
     }
 
@@ -26,6 +27,8 @@ public class FollowKnife : MonoBehaviour
     /// </summary>
     private void UpdatePosition()
     {
+        if (knife == null) return;
+
         pos.y = knife.transform.position.y;
         transform.position = pos;
     }

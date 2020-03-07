@@ -12,15 +12,10 @@ public class CreateDesiredKnife : ScriptableWizard
     public Vector3 spawnPosition = new Vector3();
     public Vector3 spawnRotationEuler = new Vector3();
 
-    [Range(0, 16)] public int pointsInFirstLayer = 6;
-    [Range(1f, 30f)] public float deflectionAngleOfFirstLayer = 10f;
-    [Range(0, 16)] public int pointsPerCircle = 16;
-    [Range(0, 16)] public int numOfCircles = 2;
+    [Range(5, 180)] public int numberOfCuttingPoints = 18;
     [Range(0.1f, 20f)] public float rangeOfRaycast = 2f;
     [Range(0.01f, 20f)] public float sphereRadius = 0.5f;
-
-    private Vector3 cutDirectionGlobal = new Vector3(-1f, 0f, 0f);
-
+    
     public bool markMeshAsDynamic = false;
     public bool addRigidbody = false;
     public bool isRigidbodyKinematic = true;
@@ -65,18 +60,14 @@ public class CreateDesiredKnife : ScriptableWizard
 
         MeshFilter meshFilter = knifeGO.AddComponent<MeshFilter>();
         MeshRenderer meshRenderer = knifeGO.AddComponent<MeshRenderer>();
-        //MeshCollider meshCollider = knifeGO.AddComponent<MeshCollider>();
         GenericKnife knife = knifeGO.AddComponent<GenericKnife>();
-
-        knife.CreateKnife(pointsInFirstLayer, deflectionAngleOfFirstLayer, pointsPerCircle, numOfCircles, cutDirectionGlobal, rangeOfRaycast);
+        GenericKnifeControll genericKnifeControll = knifeGO.AddComponent<GenericKnifeControll>();
         
+        knife.CreateKnife(numberOfCuttingPoints, rangeOfRaycast);
+
         mesh = GetSphereMesh();
         mesh.name = meshName;
         meshFilter.mesh = mesh;
-
-        //meshCollider.sharedMesh = mesh;
-        //meshCollider.isTrigger = true;
-        //if (markMeshAsDynamic) meshCollider.sharedMesh.MarkDynamic();
 
         if (addRigidbody)
         {

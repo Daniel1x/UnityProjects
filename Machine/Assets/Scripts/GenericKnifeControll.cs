@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class GenericKnifeControll : MonoBehaviour
 {
-    [SerializeField] private bool constantMove;
-    [SerializeField] [Range(0f, 0.25f)] float maxDelta = 0.25f;
+    public bool constantMove = true;
+    [Range(0f, 0.25f)] public float maxDelta = 0.05f;
 
     private void Update()
     {

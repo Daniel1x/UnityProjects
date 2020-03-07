@@ -20,12 +20,14 @@ public class CreateDesiredCylinder : ScriptableWizard
     public bool markMeshAsDynamic = true;
     public bool addRigidbody = false;
     public bool isRigidbodyKinematic = true;
+    [Range(1, 100)] public int numberOfCylindersToCreate = 1;
 
     private const string meshName = "GenericMesh";
     private Vector3[] vertices;
     private int[] triangles;
     private Mesh mesh;
     private MeshCollider meshCollider;
+    private static int cylinderNumber = 0;
 
     [MenuItem("Cylinder Creator/Create Desired Cylinder")]
     static void CreateWizard()
@@ -38,13 +40,24 @@ public class CreateDesiredCylinder : ScriptableWizard
         isValid = false;
         helpString = "Remember to choose the material!";
         material = FindMaterialWithName("Metal");
+
+        GetLastSettings();
     }
 
     private void OnWizardCreate()
     {
+        for (int i = 0; i < numberOfCylindersToCreate; i++)
+            CreateOneCylinder();
+
+        SetLastSettings();
+    }
+
+    private void CreateOneCylinder()
+    {
         GameObject cylinderGO = new GameObject();
-        cylinderGO.name = gameObjectName;
+        cylinderGO.name = gameObjectName + cylinderNumber.ToString();
         cylinderGO.tag = gameObjectTag;
+        cylinderNumber++;
 
         cylinderGO.transform.position = spawnPosition;
         cylinderGO.transform.rotation = Quaternion.Euler(spawnRotationEuler);
@@ -61,7 +74,7 @@ public class CreateDesiredCylinder : ScriptableWizard
             rotateMetal.rotationsPerSecond = rotationSpeed;
         }
 
-        if(addRigidbody)
+        if (addRigidbody)
         {
             Rigidbody rigidbody = cylinderGO.AddComponent<Rigidbody>();
             rigidbody.isKinematic = isRigidbodyKinematic;
@@ -189,4 +202,53 @@ public class CreateDesiredCylinder : ScriptableWizard
             if (materials[i].name == "Metal") material = materials[i];
         return material;
     }
+
+    private DesiredCylinderSettings FindLastCylinderSettings(string lastCylinderSettingsFileName)
+    {
+        DesiredCylinderSettings lastCylinderSettings = null;
+        DesiredCylinderSettings[] cylinderSettings = Resources.FindObjectsOfTypeAll<DesiredCylinderSettings>();
+        for (int i = 0; i < cylinderSettings.Length; i++)
+            if (cylinderSettings[i].name == lastCylinderSettingsFileName) lastCylinderSettings = cylinderSettings[i];
+        return lastCylinderSettings;
+    }
+    
+    private void SetLastSettings()
+    {
+        DesiredCylinderSettings lastCylinderSettings = FindLastCylinderSettings("LastCylinderSettings");
+        if (lastCylinderSettings == null) return;
+        lastCylinderSettings.gameObjectName = gameObjectName;
+        lastCylinderSettings.gameObjectTag = gameObjectTag;
+        lastCylinderSettings.spawnPosition = spawnPosition;
+        lastCylinderSettings.spawnRotationEuler = spawnRotationEuler;
+        lastCylinderSettings.numberOfVerticesPerLayer = numberOfVerticesPerLayer;
+        lastCylinderSettings.numberOfLayers = numberOfLayers;
+        lastCylinderSettings.hightOfOneLayer = hightOfOneLayer;
+        lastCylinderSettings.widthOfCylinder = widthOfCylinder;
+        lastCylinderSettings.midpointHeightDifference = midpointHeightDifference;
+        lastCylinderSettings.rotationSpeed = rotationSpeed;
+        lastCylinderSettings.markMeshAsDynamic = markMeshAsDynamic;
+        lastCylinderSettings.addRigidbody = addRigidbody;
+        lastCylinderSettings.isRigidbodyKinematic = isRigidbodyKinematic;
+    }
+
+    private void GetLastSettings()
+    {
+        DesiredCylinderSettings lastCylinderSettings = FindLastCylinderSettings("LastCylinderSettings");
+        if (lastCylinderSettings == null) return;
+        gameObjectName = lastCylinderSettings.gameObjectName;
+        gameObjectTag = lastCylinderSettings.gameObjectTag;
+        spawnPosition = lastCylinderSettings.spawnPosition;
+        spawnRotationEuler = lastCylinderSettings.spawnRotationEuler;
+        numberOfVerticesPerLayer = lastCylinderSettings.numberOfVerticesPerLayer;
+        numberOfLayers = lastCylinderSettings.numberOfLayers;
+        hightOfOneLayer = lastCylinderSettings.hightOfOneLayer;
+        widthOfCylinder = lastCylinderSettings.widthOfCylinder;
+        midpointHeightDifference = lastCylinderSettings.midpointHeightDifference;
+        rotationSpeed = lastCylinderSettings.rotationSpeed;
+        markMeshAsDynamic = lastCylinderSettings.markMeshAsDynamic;
+        addRigidbody = lastCylinderSettings.addRigidbody;
+        isRigidbodyKinematic = lastCylinderSettings.isRigidbodyKinematic;
+
+    }
+
 }
