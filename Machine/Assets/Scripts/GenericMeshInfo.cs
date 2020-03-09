@@ -3,20 +3,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenericMeshInfo : MonoBehaviour
+[Serializable]
+public class Info
 {
-    public int numberOfVerticesPerLayer = 12;
-    public int numberOfLayers = 10;
-    public float hightOfOneLayer = 0.1f;
-    public float widthOfCylinder = 1f;
-    public float midpointHeightDifference = 0.1f;
+    public int numberOfVerticesPerLayer = 0;
+    public int numberOfLayers = 0;
+    public float hightOfOneLayer = 0f;
+    public float widthOfCylinder = 0f;
+    public float midpointHeightDifference = 0f;
+    public float[] magnitudesOfLayers = new float[0];
 
-    public void SetInformations(int numberOfVerticesPerLayer, int numberOfLayers, float hightOfOneLayer, float widthOfCylinder, float midpointHeightDifference)
+    public Info() {}
+
+    public Info(Info info)
+    {
+        numberOfVerticesPerLayer = info.numberOfVerticesPerLayer;
+        numberOfLayers = info.numberOfLayers;
+        hightOfOneLayer = info.hightOfOneLayer;
+        widthOfCylinder = info.widthOfCylinder;
+        midpointHeightDifference = info.midpointHeightDifference;
+        magnitudesOfLayers = info.magnitudesOfLayers;
+    }
+
+    public Info(int numberOfVerticesPerLayer, int numberOfLayers, float hightOfOneLayer, float widthOfCylinder, float midpointHeightDifference, float[] magnitudesOfLayers)
     {
         this.numberOfVerticesPerLayer = numberOfVerticesPerLayer;
         this.numberOfLayers = numberOfLayers;
         this.hightOfOneLayer = hightOfOneLayer;
         this.widthOfCylinder = widthOfCylinder;
         this.midpointHeightDifference = midpointHeightDifference;
+        this.magnitudesOfLayers = magnitudesOfLayers ?? throw new ArgumentNullException(nameof(magnitudesOfLayers));
+    }
+}
+
+public class GenericMeshInfo : MonoBehaviour
+{
+    public Info info = new Info();
+    
+    public void SetInformations(int numberOfVerticesPerLayer, int numberOfLayers, float hightOfOneLayer, float widthOfCylinder, float midpointHeightDifference, float[] magnitudesOfLayers)
+    {
+        info.numberOfVerticesPerLayer = numberOfVerticesPerLayer;
+        info.numberOfLayers = numberOfLayers;
+        info.hightOfOneLayer = hightOfOneLayer;
+        info.widthOfCylinder = widthOfCylinder;
+        info.midpointHeightDifference = midpointHeightDifference;
+        info.magnitudesOfLayers = magnitudesOfLayers;
+    }
+
+    public void SetInformations(Info info)
+    {
+        this.info.numberOfVerticesPerLayer = info.numberOfVerticesPerLayer;
+        this.info.numberOfLayers = info.numberOfLayers;
+        this.info.hightOfOneLayer = info.hightOfOneLayer;
+        this.info.widthOfCylinder = info.widthOfCylinder;
+        this.info.midpointHeightDifference = info.midpointHeightDifference;
+        this.info.magnitudesOfLayers = info.magnitudesOfLayers;
     }
 }

@@ -20,9 +20,9 @@ public class ArrangeChildComponentsEvenly : MonoBehaviour
     {
         Transform[] childs = GetComponentsInChildren<Transform>();
 
-        for(int i = 1; i < childs.Length; i++)
+        for(int childIndex = 1; childIndex < childs.Length; childIndex++)
         {
-            childs[i].position = transform.position + (i - 1) * offset;
+            childs[childIndex].position = transform.position + (childIndex - 1) * offset;
         }
     }
 }

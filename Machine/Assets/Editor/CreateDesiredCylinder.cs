@@ -6,7 +6,11 @@ using System;
 
 public class CreateDesiredCylinder : ScriptableWizard
 {
-    public Material material;
+    public DesiredCylinderSettings lastSettingsSO = null;
+    private DesiredCylinderSettings actualSettingsSO = null;
+    private bool lastSettingsLoaded = false;
+    public Transform parentObject = null;
+    public Material material = null;
     public string gameObjectName = "GenericCylinder";
     public string gameObjectTag = "GeneratedCylinder";
     public Vector3 spawnPosition = new Vector3();
@@ -41,7 +45,7 @@ public class CreateDesiredCylinder : ScriptableWizard
         helpString = "Remember to choose the material!";
         material = FindMaterialWithName("Metal");
 
-        GetLastSettings();
+        GetLastSettings(lastSettingsSO);
     }
 
     private void OnWizardCreate()
@@ -49,12 +53,13 @@ public class CreateDesiredCylinder : ScriptableWizard
         for (int i = 0; i < numberOfCylindersToCreate; i++)
             CreateOneCylinder();
 
-        SetLastSettings();
+        SetLastSettings(lastSettingsSO);
     }
 
     private void CreateOneCylinder()
     {
         GameObject cylinderGO = new GameObject();
+        if (parentObject != null) cylinderGO.transform.parent = parentObject;
         cylinderGO.name = gameObjectName + cylinderNumber.ToString();
         cylinderGO.tag = gameObjectTag;
         cylinderNumber++;
@@ -66,7 +71,7 @@ public class CreateDesiredCylinder : ScriptableWizard
         MeshRenderer meshRenderer = cylinderGO.AddComponent<MeshRenderer>();
         MeshCollider meshCollider = cylinderGO.AddComponent<MeshCollider>();
         GenericMeshInfo genericMeshInfo = cylinderGO.AddComponent<GenericMeshInfo>();
-        genericMeshInfo.SetInformations(numberOfVerticesPerLayer, numberOfLayers, hightOfOneLayer, widthOfCylinder, midpointHeightDifference);
+        genericMeshInfo.SetInformations(numberOfVerticesPerLayer, numberOfLayers, hightOfOneLayer, widthOfCylinder, midpointHeightDifference, CreateMagnitudesArray());
 
         if (rotationSpeed != 0)
         {
@@ -91,6 +96,14 @@ public class CreateDesiredCylinder : ScriptableWizard
 
         meshCollider.sharedMesh = mesh;
         if (markMeshAsDynamic) meshCollider.sharedMesh.MarkDynamic();
+    }
+
+    private float[] CreateMagnitudesArray()
+    {
+        float[] magnitudesOfLayers = new float[numberOfLayers];
+        for (int i = 0; i < magnitudesOfLayers.Length; i++)
+            magnitudesOfLayers[i] = 0.5f * widthOfCylinder;
+        return magnitudesOfLayers;
     }
 
     private void CreateDesiredMesh()
@@ -192,6 +205,29 @@ public class CreateDesiredCylinder : ScriptableWizard
     private void OnWizardUpdate()
     {
         isValid = material ? true : false;
+        UpdateSettingsFromScriptableObject();
+    }
+
+    private void UpdateSettingsFromScriptableObject()
+    {
+        if (!lastSettingsLoaded && lastSettingsSO != null)
+        {
+            GetLastSettings(lastSettingsSO);
+            lastSettingsLoaded = true;
+            actualSettingsSO = lastSettingsSO;
+        }
+        else if (actualSettingsSO != lastSettingsSO)
+        {
+            GetLastSettings(lastSettingsSO);
+            actualSettingsSO = lastSettingsSO;
+        }
+
+
+        if (!lastSettingsLoaded && lastSettingsSO != null)
+        {
+            GetLastSettings(lastSettingsSO);
+            lastSettingsLoaded = true;
+        }
     }
 
     private Material FindMaterialWithName(string name)
@@ -212,9 +248,9 @@ public class CreateDesiredCylinder : ScriptableWizard
         return lastCylinderSettings;
     }
     
-    private void SetLastSettings()
+    private void SetLastSettings(DesiredCylinderSettings lastSettingsSO)
     {
-        DesiredCylinderSettings lastCylinderSettings = FindLastCylinderSettings("LastCylinderSettings");
+        DesiredCylinderSettings lastCylinderSettings = lastSettingsSO;
         if (lastCylinderSettings == null) return;
         lastCylinderSettings.gameObjectName = gameObjectName;
         lastCylinderSettings.gameObjectTag = gameObjectTag;
@@ -231,9 +267,9 @@ public class CreateDesiredCylinder : ScriptableWizard
         lastCylinderSettings.isRigidbodyKinematic = isRigidbodyKinematic;
     }
 
-    private void GetLastSettings()
+    private void GetLastSettings(DesiredCylinderSettings lastSettingsSO)
     {
-        DesiredCylinderSettings lastCylinderSettings = FindLastCylinderSettings("LastCylinderSettings");
+        DesiredCylinderSettings lastCylinderSettings = lastSettingsSO;
         if (lastCylinderSettings == null) return;
         gameObjectName = lastCylinderSettings.gameObjectName;
         gameObjectTag = lastCylinderSettings.gameObjectTag;
@@ -248,7 +284,6 @@ public class CreateDesiredCylinder : ScriptableWizard
         markMeshAsDynamic = lastCylinderSettings.markMeshAsDynamic;
         addRigidbody = lastCylinderSettings.addRigidbody;
         isRigidbodyKinematic = lastCylinderSettings.isRigidbodyKinematic;
-
     }
 
 }
