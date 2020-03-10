@@ -12,18 +12,13 @@ public class GameManagerEditor : Editor
 
         GameManager gameManager = (GameManager)target;
 
-        if(GUILayout.Button("Reset level"))
+        if(GUILayout.Button("Start next level"))
         {
-            Debug.Log("Nothing to load!");
-            //gameManager.ResetLevel();
+            gameManager.ResetLevel();
         }
         if(GUILayout.Button("Save current level"))
         {
             gameManager.SaveLevelToScriptableObject();
-        }
-        if(GUILayout.Button("Create cylinder"))
-        {
-            StaticCylinderCreator.CreateCylinder(FindObjectOfType<GameManager>().transform, "Cylinder", "GeneratedCylinder", Vector3.zero, 12, 101, 3f, 0.025f, 0.1f, "Metal");
         }
     }
 }

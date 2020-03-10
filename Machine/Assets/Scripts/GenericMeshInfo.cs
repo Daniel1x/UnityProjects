@@ -22,7 +22,7 @@ public class Info
         hightOfOneLayer = info.hightOfOneLayer;
         widthOfCylinder = info.widthOfCylinder;
         midpointHeightDifference = info.midpointHeightDifference;
-        magnitudesOfLayers = info.magnitudesOfLayers;
+        magnitudesOfLayers = CopyArray(info.magnitudesOfLayers);
     }
 
     public Info(int numberOfVerticesPerLayer, int numberOfLayers, float hightOfOneLayer, float widthOfCylinder, float midpointHeightDifference, float[] magnitudesOfLayers)
@@ -32,7 +32,16 @@ public class Info
         this.hightOfOneLayer = hightOfOneLayer;
         this.widthOfCylinder = widthOfCylinder;
         this.midpointHeightDifference = midpointHeightDifference;
-        this.magnitudesOfLayers = magnitudesOfLayers ?? throw new ArgumentNullException(nameof(magnitudesOfLayers));
+        this.magnitudesOfLayers = CopyArray(magnitudesOfLayers);
+    }
+
+    private float[] CopyArray(float[] arrayToCopy)
+    {
+        int arrayLength = arrayToCopy.Length;
+        float[] newArray = new float[arrayLength];
+        for (int i = 0; i < arrayLength; i++)
+            newArray[i] = arrayToCopy[i];
+        return newArray;
     }
 }
 

@@ -5,11 +5,28 @@ using UnityEngine;
 public static class StaticCylinderCreator
 {
     private static int gameObjectID = 0;
-    private static string defaultMeshName = "GenericMesh";
+    public static readonly string defaultMeshName = "GenericMesh";
+    public static readonly string defaultGameObjectName = "GenericCylinder";
+    public static readonly string defaultGameObjectTag = "GeneratedCylinder";
+    public static readonly string defaultMaterialName = "Metal";
 
-    public static GameObject CreateCylinder(Transform parentObject, string gameObjectName, string gameObjectTag, Vector3 spawnPosition, int numberOfVerticesPerLayer,
-        int numberOfLayers, float widthOfCylinder, float hightOfOneLayer, float midpointHeightDifference, string materialName)
+    public static GameObject CreateCylinderWithDefaultNames(Transform parentObject, Info cylinderInfo, float spawnHight)
     {
+        return CreateCylinder(parentObject, defaultGameObjectName, defaultGameObjectTag, defaultMaterialName, cylinderInfo, spawnHight);
+    }
+    
+    public static GameObject CreateCylinder(Transform parentObject, string gameObjectName, string gameObjectTag, string materialName, Info cylinderInfo, float spawnHight)
+    {
+        Vector3 spawnPosition = spawnHight * Vector3.up;
+        int numberOfVerticesPerLayer = cylinderInfo.numberOfVerticesPerLayer;
+        int numberOfLayers = cylinderInfo.numberOfLayers;
+        float widthOfCylinder = cylinderInfo.widthOfCylinder;
+        float hightOfOneLayer = cylinderInfo.hightOfOneLayer;
+        float midpointHeightDifference = cylinderInfo.midpointHeightDifference;
+        float[] magnitudes = new float[cylinderInfo.magnitudesOfLayers.Length];
+        for (int i = 0; i < magnitudes.Length; i++)
+            magnitudes[i] = cylinderInfo.magnitudesOfLayers[i];
+
         GameObject cylinderGO = new GameObject() as GameObject;
         cylinderGO.transform.position = spawnPosition;
         cylinderGO.name = gameObjectName + gameObjectID.ToString();
@@ -23,13 +40,14 @@ public static class StaticCylinderCreator
         MeshCollider meshCollider = cylinderGO.AddComponent<MeshCollider>();
         GenericMeshInfo genericMeshInfo = cylinderGO.AddComponent<GenericMeshInfo>();
 
-        genericMeshInfo.SetInformations(numberOfVerticesPerLayer, numberOfLayers, hightOfOneLayer, widthOfCylinder, midpointHeightDifference, CreateMagnitudesArray(numberOfLayers, widthOfCylinder));
+        genericMeshInfo.SetInformations(numberOfVerticesPerLayer, numberOfLayers, hightOfOneLayer, widthOfCylinder, midpointHeightDifference,
+                                        magnitudes != null ? magnitudes : CreateMagnitudesArray(numberOfLayers, widthOfCylinder));
 
-        Material material = FindDefaultMaterial();
+        Material material = FindDefaultMaterial(materialName);
         if (material != null) meshRenderer.material = material;
 
         Mesh mesh = new Mesh();
-        mesh = CreateMesh(mesh, numberOfVerticesPerLayer, numberOfLayers, widthOfCylinder, hightOfOneLayer, midpointHeightDifference);
+        mesh = CreateMesh(mesh, numberOfVerticesPerLayer, numberOfLayers, widthOfCylinder, hightOfOneLayer, midpointHeightDifference, magnitudes);
         mesh.name = defaultMeshName;
         meshFilter.sharedMesh = mesh;
         meshCollider.sharedMesh = mesh;
@@ -37,11 +55,10 @@ public static class StaticCylinderCreator
         return cylinderGO;
     }
 
-    public static Mesh CreateMesh(Mesh meshToModify, int numberOfVerticesPerLayer, int numberOfLayers, float widthOfCylinder, float hightOfOneLayer, float midpointHeightDifference)
+    public static Mesh CreateMesh(Mesh meshToModify, int numberOfVerticesPerLayer, int numberOfLayers, float widthOfCylinder, float hightOfOneLayer, float midpointHeightDifference, float[] magnitudesArray)
     {
         Mesh mesh = meshToModify;
-
-        Vector3[] vertices = CreateVertices(numberOfVerticesPerLayer, numberOfLayers, widthOfCylinder, hightOfOneLayer, midpointHeightDifference);
+        Vector3[] vertices = CreateVertices(numberOfVerticesPerLayer, numberOfLayers, widthOfCylinder, hightOfOneLayer, midpointHeightDifference, magnitudesArray);
         int[] triangles = CreateTriangles(numberOfVerticesPerLayer, numberOfLayers);
         mesh.MarkDynamic();
         mesh.SetVertices(vertices);
@@ -51,16 +68,18 @@ public static class StaticCylinderCreator
         return mesh;
     }
 
-    public static Vector3[] CreateVertices(int numberOfVerticesPerLayer, int numberOfLayers, float widthOfCylinder, float hightOfOneLayer, float midpointHeightDifference)
+    public static Vector3[] CreateVertices(int numberOfVerticesPerLayer, int numberOfLayers, float widthOfCylinder, float hightOfOneLayer, float midpointHeightDifference, float[] magnitudesArray = null)
     {
         Vector3[] vertices = new Vector3[numberOfVerticesPerLayer * numberOfLayers + 2];
         for (int layer = 0; layer < numberOfLayers; layer++)
         {
+            float layerMagnitude = magnitudesArray != null ? magnitudesArray[layer] : 0.5f * widthOfCylinder;
+
             for (int vertex = 0; vertex < numberOfVerticesPerLayer; vertex++)
             {
                 vertices[vertex + layer * numberOfVerticesPerLayer] =
                     Quaternion.Euler(0f, 360f * vertex / numberOfVerticesPerLayer, 0f)
-                    * new Vector3(0.5f * widthOfCylinder, layer * hightOfOneLayer, 0f);
+                    * new Vector3(layerMagnitude, layer * hightOfOneLayer, 0f);
             }
         }
         /// Bottom and top vertices index placeholder.

@@ -10,19 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3097eb853e12ae74eae11827af8bdc0c, type: 3}
-  m_Name: BigCylinderSettings
+  m_Name: SmallCylinderSettings
   m_EditorClassIdentifier: 
   material: {fileID: 2100000, guid: c31f5d40e3ba66843a0b776b36caf9fa, type: 2}
   gameObjectName: GenericCylinder
   gameObjectTag: GeneratedCylinder
   spawnPosition: {x: 0, y: 0, z: 0}
   spawnRotationEuler: {x: 0, y: 0, z: 0}
-  numberOfVerticesPerLayer: 36
-  numberOfLayers: 401
-  hightOfOneLayer: 0.025
-  widthOfCylinder: 5
+  numberOfVerticesPerLayer: 12
+  numberOfLayers: 101
+  hightOfOneLayer: 0.05
+  widthOfCylinder: 3
   midpointHeightDifference: 0
-  rotationSpeed: 0
-  markMeshAsDynamic: 1
-  addRigidbody: 0
-  isRigidbodyKinematic: 1

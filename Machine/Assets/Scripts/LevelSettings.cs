@@ -22,9 +22,14 @@ public class LevelSettings : ScriptableObject
         int arrayLength = genericMeshInfo.Length;
         meshInfoArray = new Info[arrayLength];
         for (int index = 0; index < arrayLength; index++)
-        {
-            Info meshInfo = genericMeshInfo[index].info;
-            meshInfoArray[index] = meshInfo;
-        }
+            meshInfoArray[index] = genericMeshInfo[index].info;
+    }
+
+    public void SaveCylinderPositions(Vector3[] cylindersPositions)
+    {
+        int arrayLength = cylindersPositions.Length;
+        cylinderPositionHeights = new float[arrayLength];
+        for (int index = 0; index < arrayLength; index++)
+            cylinderPositionHeights[index] = cylindersPositions[index].y;
     }
 }

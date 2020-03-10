@@ -10,8 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67e2235bc071f56448b6a89fde769d1e, type: 3}
-  m_Name: LevelSettings
+  m_Name: LevelSettings 1
   m_EditorClassIdentifier: 
-  cylinderSettings: []
   meshInfoArray: []
   cylinderPositionHeights: []

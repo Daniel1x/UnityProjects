@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     /// <summary>
     /// Current level index.
     /// </summary>
-    [SerializeField] private int levelIndex = 0;
+    [SerializeField] private int levelIndex = -1;
     /// <summary>
     /// Scriptable object used to save level settings.
     /// </summary>
@@ -66,12 +66,30 @@ public class GameManager : MonoBehaviour
 
     public void ResetLevel()
     {
-        StartNewLevel(levels[levelIndex]);
+        StartNewLevel();
     }
 
-    private void StartNewLevel(LevelSettings levelSettings)
+    private void StartNewLevel()
     {
         DestroyAllChilds();
+        CreateNewLevelGameObjects();
+    }
+
+    private void CreateNewLevelGameObjects()
+    {
+        levelIndex++;
+        levelIndex %= levels.Length;
+        LevelSettings thisLevelSettings = levels[levelIndex];
+
+        int arrayLength = thisLevelSettings.meshInfoArray.Length;
+        if (arrayLength != thisLevelSettings.cylinderPositionHeights.Length) return;
+
+        for(int cylinderIndex = 0; cylinderIndex < arrayLength; cylinderIndex++)
+        {
+            Info thisCylinderInfo = thisLevelSettings.meshInfoArray[cylinderIndex];
+            float thisCylinderSpawnHight = thisLevelSettings.cylinderPositionHeights[cylinderIndex];
+            StaticCylinderCreator.CreateCylinderWithDefaultNames(transform, thisCylinderInfo, thisCylinderSpawnHight);
+        }
     }
 
     private void DestroyAllChilds()
@@ -88,7 +106,11 @@ public class GameManager : MonoBehaviour
     {
         GenericMeshInfo[] genericMeshInfo = GetComponentsInChildren<GenericMeshInfo>();
         saveLevelSettingsToSO.SetMeshInfoArray(genericMeshInfo);
-    }
-    
 
+        Transform[] cylinderTransforms = GetComponentsInChildren<Transform>();
+        Vector3[] cylinderPositions = new Vector3[genericMeshInfo.Length];
+        for (int index = 0; index < cylinderPositions.Length; index++)
+            cylinderPositions[index] = cylinderTransforms[index + 1].position;
+        saveLevelSettingsToSO.SaveCylinderPositions(cylinderPositions);
+    }
 }

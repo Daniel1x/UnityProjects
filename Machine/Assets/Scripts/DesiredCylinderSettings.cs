@@ -15,10 +15,6 @@ public class DesiredCylinderSettings : ScriptableObject
     public float hightOfOneLayer = 0.1f;
     public float widthOfCylinder = 1f;
     public float midpointHeightDifference = 0.1f;
-    public float rotationSpeed = 0f;
-    public bool markMeshAsDynamic = true;
-    public bool addRigidbody = false;
-    public bool isRigidbodyKinematic = true;
 
     public void SetDefaults()
     {
@@ -31,9 +27,5 @@ public class DesiredCylinderSettings : ScriptableObject
         hightOfOneLayer = 0.1f;
         widthOfCylinder = 1f;
         midpointHeightDifference = 0.1f;
-        rotationSpeed = 0f;
-        markMeshAsDynamic = true;
-        addRigidbody = false;
-        isRigidbodyKinematic = true;
     }
 }
