@@ -3623,6 +3623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
+  howToMove: 0
   constantMove: 1
   maxDelta: 0.05
 --- !u!114 &714605334
@@ -3639,7 +3640,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   numberOfPoints: 45
   drawPoints: 1
-  rangeOfRaycast: 10
+  rangeOfRaycast: 20
   forceKnifeCreation: 1
   handleCutsByLayer: 1
   minimumMetalThickness: 0.01

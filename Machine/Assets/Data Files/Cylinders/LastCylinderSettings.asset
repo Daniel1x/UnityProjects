@@ -18,7 +18,7 @@ MonoBehaviour:
   spawnPosition: {x: 0, y: 0, z: 0}
   spawnRotationEuler: {x: 0, y: 0, z: 0}
   numberOfVerticesPerLayer: 36
-  numberOfLayers: 401
-  hightOfOneLayer: 0.1
-  widthOfCylinder: 5
+  numberOfLayers: 190
+  hightOfOneLayer: 0.2
+  widthOfCylinder: 6
   midpointHeightDifference: 0

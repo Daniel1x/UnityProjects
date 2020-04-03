@@ -27,6 +27,7 @@ public class FollowKnife : MonoBehaviour
     /// </summary>
     private void UpdatePosition()
     {
+        if (knife == null) knife = FindObjectOfType<GenericKnife>();
         if (knife == null) return;
 
         pos.y = knife.transform.position.y;

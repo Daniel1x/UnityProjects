@@ -6,6 +6,9 @@ public class GenericKnifeControll : MonoBehaviour
 {
     [SerializeField] [Range(0f, 100f)] private float moveSpeed = 1f;
 
+    private enum Controll { FollowTouch, MoveByDeltaTouch};
+    [SerializeField] private Controll howToMove = Controll.FollowTouch;
+
     private int screenWidth;
     private int screenHight;
 
@@ -23,8 +26,17 @@ public class GenericKnifeControll : MonoBehaviour
 
     private void Update()
     {
-        //MoveKnife();
-        MoveKnifeByDeltaTouch();
+        switch (howToMove)
+        {
+            case Controll.FollowTouch:
+                MoveKnife();
+                break;
+            case Controll.MoveByDeltaTouch:
+                MoveKnifeByDeltaTouch();
+                break;
+            default:
+                break;
+        }
     }
 
     private void MoveKnife()

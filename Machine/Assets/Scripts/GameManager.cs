@@ -88,7 +88,16 @@ public class GameManager : MonoBehaviour
         {
             Info thisCylinderInfo = thisLevelSettings.meshInfoArray[cylinderIndex];
             float thisCylinderSpawnHight = thisLevelSettings.cylinderPositionHeights[cylinderIndex];
-            StaticCylinderCreator.CreateCylinderWithDefaultNames(transform, thisCylinderInfo, thisCylinderSpawnHight);
+            GameObject go = StaticCylinderCreator.CreateCylinderWithDefaultNames(transform, thisCylinderInfo, thisCylinderSpawnHight);
+            MeshCollider goMeshCollider = go.GetComponent<MeshCollider>();
+            if (goMeshCollider) Destroy(goMeshCollider);
+        }
+
+        for (int cylinderIndex = 0; cylinderIndex < arrayLength; cylinderIndex++)
+        {
+            Info thisCylinderInfo = thisLevelSettings.meshInfoArray[cylinderIndex];
+            float thisCylinderSpawnHight = thisLevelSettings.cylinderPositionHeights[cylinderIndex];
+            StaticCylinderCreator.CreateCylinderWithDefaultNames(transform, thisCylinderInfo, thisCylinderSpawnHight, true);
         }
     }
 

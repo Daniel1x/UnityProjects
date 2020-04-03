@@ -9,10 +9,28 @@ public static class StaticCylinderCreator
     public static readonly string defaultGameObjectName = "GenericCylinder";
     public static readonly string defaultGameObjectTag = "GeneratedCylinder";
     public static readonly string defaultMaterialName = "Metal";
+    public static readonly string defaultTargetMaterialName = "TargetMetal";
 
-    public static GameObject CreateCylinderWithDefaultNames(Transform parentObject, Info cylinderInfo, float spawnHight)
+    public static GameObject CreateCylinderWithDefaultNames(Transform parentObject, Info cylinderInfo, float spawnHight, bool createWithBaseWidth = false)
     {
-        return CreateCylinder(parentObject, defaultGameObjectName, defaultGameObjectTag, defaultMaterialName, cylinderInfo, spawnHight);
+        if(!createWithBaseWidth) return CreateCylinder(parentObject, defaultGameObjectName, defaultGameObjectTag, defaultTargetMaterialName, cylinderInfo, spawnHight);
+        else
+        {
+            Info info = cylinderInfo;
+            int arrayLength = info.magnitudesOfLayers.Length;
+            float maxWidth = 0;
+            for (int i = 0; i < arrayLength; i++)
+                if (info.magnitudesOfLayers[i] > maxWidth) maxWidth = info.magnitudesOfLayers[i];
+            info.magnitudesOfLayers = CreateMagnitudesArray(arrayLength, maxWidth * 2f);
+            return CreateCylinder(parentObject, defaultGameObjectName, defaultGameObjectTag, defaultMaterialName, info, spawnHight);
+        }
+    }
+
+    public static GameObject CreateCylinder(Transform parentObject, string gameObjectName, string gameObjectTag, string materialName, int numberOfVerticesPerLayer,
+                                            int numberOfLayers, float widthOfCylinder, float hightOfOneLayer, float midpointHeightDifference, float[] magnitudes, float spawnHight)
+    {
+        Info info = new Info(numberOfVerticesPerLayer, numberOfLayers, hightOfOneLayer, widthOfCylinder, midpointHeightDifference, magnitudes);
+        return CreateCylinder(parentObject, gameObjectName, gameObjectTag, materialName, info, spawnHight);
     }
     
     public static GameObject CreateCylinder(Transform parentObject, string gameObjectName, string gameObjectTag, string materialName, Info cylinderInfo, float spawnHight)
