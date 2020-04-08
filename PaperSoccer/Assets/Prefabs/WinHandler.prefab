@@ -51,6 +51,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eca7f6f3d800f3e429ed107ab7d2324f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  WinTextBox: {fileID: 0}
+  winTextBox: {fileID: 0}
+  statsTextBox: {fileID: 0}
   data: {fileID: 11400000, guid: 70422ced9c44a064480122377fb5912a, type: 2}
-  delayTime: 3
+  delayTime: 1

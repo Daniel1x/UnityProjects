@@ -11,5 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8dfb15fc81bb954e83e5e6f4756c44b, type: 3}
   m_Name: DataFile
   m_EditorClassIdentifier: 
-  PlayerOneWins: 0
-  PlayerTwoWins: 0
+  PlayerOneWins: 1
+  PlayerTwoWins: 1

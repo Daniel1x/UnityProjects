@@ -12,6 +12,25 @@ public class MapCreator : MonoBehaviour {
     [SerializeField] [Range(6, 20)] private int xSize;
     [SerializeField] [Range(6, 20)] private int ySize;
 
+    public void IncreaseXSize()
+    {
+        xSize++;
+    }
+    public void DecreaseXSize()
+    {
+        xSize--;
+        if (xSize < 4) xSize = 4;
+    }
+    public void IncreaseYSize()
+    {
+        ySize++;
+    }
+    public void DecreaseYSize()
+    {
+        ySize--;
+        if (ySize < 4) ySize = 4;
+    }
+
     public Vector2Int GetSize() { return new Vector2Int(xSize, ySize); }
 
     private List<Vector2Int> boundariesPoints = new List<Vector2Int>();
@@ -151,7 +170,7 @@ public class MapCreator : MonoBehaviour {
         return boundaries;
     }
 
-    public List<Vector2Int> GetBoundriesPositionsArray()
+    public List<Vector2Int> GetBoundriesPositionsList()
     {
         return boundariesPoints;
     }
@@ -174,7 +193,6 @@ public class MapCreator : MonoBehaviour {
     public void RestartGame()
     {
         boundariesPoints.Clear();
-        goalPoints = new Vector2Int[6];
         playablePoints.Clear();
         DestroyOldMap();
         CreateMap(xSize, ySize);

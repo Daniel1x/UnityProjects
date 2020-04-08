@@ -14,13 +14,17 @@ public class GameManager : MonoBehaviour {
     [SerializeField] private Color playerTwoColor;
     [SerializeField] private bool playWithComputer = false;
     
-    private Camera camera;
+    public void EnableAI() { playWithComputer = !playWithComputer; }
+    
+    private Camera camera = null;
     [SerializeField] private Text playerTextBox;
 
+    private GameObject movementDot = null;
     private MapCreator map = null;
     private List<Vector2Int> playablePoints = new List<Vector2Int>();
     private List<Vector2Int> possibleMovePoints = new List<Vector2Int>();
     private List<Vector2Int> visitedPoints = new List<Vector2Int>();
+    private List<Vector2Int> boundriesPoints = new List<Vector2Int>();
     private List<Move> moves = new List<Move>();
     private Vector2Int currentPoint;
     private Vector2Int[] goalPoints = new Vector2Int[6];
@@ -40,10 +44,15 @@ public class GameManager : MonoBehaviour {
             Debug.LogError("Map Creator has not been found!");
             return;
         }
-        
+
+        movementDot = Instantiate(dotPrefab, Vector3.one * 100f, Quaternion.identity) as GameObject;
+        movementDot.transform.localScale = Vector3.one * 3f;
+        movementDot.GetComponent<SpriteRenderer>().color = Color.yellow;
+
         goalPoints = map.GetGoalPoints();
         startPoint = map.GetStartPoint();
         possibleMovePoints = map.GetPlayablePoints();
+        boundriesPoints = map.GetBoundriesPositionsList();
         currentPoint = startPoint;
 
         BlockMovesOnBoundaries();
@@ -54,7 +63,7 @@ public class GameManager : MonoBehaviour {
 
     private void BlockMovesOnBoundaries()
     {
-        List<Vector2Int> boundaries = map.GetBoundriesPositionsArray();
+        List<Vector2Int> boundaries = map.GetBoundriesPositionsList();
         int boundariesCount = boundaries.Count;
         for(int i = 0; i < boundariesCount; i++)
         {
@@ -111,11 +120,17 @@ public class GameManager : MonoBehaviour {
 
     private void MoveToNewPoint(Vector2Int clickOnGridPosition)
     {
+        MoveYellowDot(clickOnGridPosition);
         DrawPathTo(clickOnGridPosition);
         ChangePlayerTurn(currentPoint, clickOnGridPosition);
         visitedPoints.Add(clickOnGridPosition);
         currentPoint = clickOnGridPosition;
         CheckForWin(currentPoint);
+    }
+
+    private void MoveYellowDot(Vector2Int clickOnGridPosition)
+    {
+        movementDot.transform.position = new Vector3(clickOnGridPosition.x, clickOnGridPosition.y, 0f);
     }
 
     private void CheckForWin(Vector2Int currentPoint)
@@ -126,12 +141,14 @@ public class GameManager : MonoBehaviour {
             {
                 OnWinGame.Invoke();
                 OnPlayerWin.Invoke(true);
+                MoveYellowDot(new Vector2Int(100, 100));
                 return;
             }
             if (currentPoint == goalPoints[i+3])
             {
                 OnWinGame.Invoke();
                 OnPlayerWin.Invoke(false);
+                MoveYellowDot(new Vector2Int(100, 100));
                 return;
             }
         }
@@ -139,7 +156,7 @@ public class GameManager : MonoBehaviour {
 
     private void ChangePlayerTurn(Vector2Int currentPoint, Vector2Int clickOnGridPosition)
     {
-        if (PointHasBeenVisited(clickOnGridPosition) || MoveCrossedOtherMove(currentPoint, clickOnGridPosition)) 
+        if (PointHasBeenVisited(clickOnGridPosition) || MoveCrossedOtherMove(currentPoint, clickOnGridPosition) || PointBelongsToBorders(clickOnGridPosition)) 
         {
             // Do not change turn;
         }
@@ -148,6 +165,11 @@ public class GameManager : MonoBehaviour {
             isPlayerOneTurn = !isPlayerOneTurn;
             playerTextBox.text = isPlayerOneTurn ? "Player 1" : "Player 2";
         }
+    }
+
+    private bool PointBelongsToBorders(Vector2Int clickOnGridPosition)
+    {
+        return boundriesPoints.Contains(clickOnGridPosition);
     }
 
     private bool MoveCrossedOtherMove(Vector2Int currentPoint, Vector2Int clickOnGridPosition)
@@ -231,6 +253,7 @@ public class GameManager : MonoBehaviour {
 
     public void RestartGameManager()
     {
+        MoveYellowDot(new Vector2Int(100, 100));
         DestroyOldMap();
         playablePoints.Clear();
         possibleMovePoints.Clear();
@@ -266,7 +289,7 @@ public class GameManager : MonoBehaviour {
 
     private void AutoPlay()
     {
-        if (!isPlayerOneTurn) return;
+        if (isPlayerOneTurn) return;
         if (!playWithComputer) return;
         
         CheckForBlockedBall();
@@ -288,7 +311,7 @@ public class GameManager : MonoBehaviour {
         Vector2Int clickPoint;
         Vector2Int[] preferedDirections = new Vector2Int[3] { Directions.down, Directions.downLeft, Directions.downRight };
 
-        if (UnityEngine.Random.Range(0f, 100f) > 30f)
+        if (UnityEngine.Random.Range(0f, 100f) > 20f)
         {
             clickPoint = currentPoint + preferedDirections[UnityEngine.Random.Range(0, 3)];
         }

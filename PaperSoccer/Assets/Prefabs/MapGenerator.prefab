@@ -53,8 +53,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   dotPrefab: {fileID: 1000974087813326, guid: 36c30e5335808c448b5a96526bb538db, type: 2}
-  xSize: 8
-  ySize: 10
+  xSize: 6
+  ySize: 6
 --- !u!120 &120762605826806460
 LineRenderer:
   m_ObjectHideFlags: 1

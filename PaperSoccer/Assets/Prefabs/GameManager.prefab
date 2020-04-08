@@ -80,7 +80,7 @@ MonoBehaviour:
   dotPrefab: {fileID: 1000974087813326, guid: 36c30e5335808c448b5a96526bb538db, type: 2}
   linePrefab: {fileID: 120834328125675210, guid: 7872312bbd3116b489908bdd1be489aa,
     type: 2}
-  playerOneColor: {r: 0, g: 1, b: 0.006896496, a: 0}
+  playerOneColor: {r: 0, g: 0.29411763, b: 0.002028381, a: 0}
   playerTwoColor: {r: 1, g: 0, b: 0, a: 0}
   playWithComputer: 1
   playerTextBox: {fileID: 0}
