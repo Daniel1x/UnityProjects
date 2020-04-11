@@ -53,10 +53,13 @@ public class Pathfinder : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(new Vector3(xPos, rayHight, yPos), Vector3.down, out hit, rayLength))
                 {
-                    Vector3 hitPos = RoundValue(hit.point, roundDigits);
-                    Waypoint thisHitWaypoint = new Waypoint(hitPos);
-                    grid.Add(new Vector2(hitPos.x, hitPos.z), thisHitWaypoint);
-                    waypoints.Add(thisHitWaypoint);
+                    if(hit.collider.tag != "Wall")
+                    {
+                        Vector3 hitPos = RoundValue(hit.point, roundDigits);
+                        Waypoint thisHitWaypoint = new Waypoint(hitPos);
+                        grid.Add(new Vector2(hitPos.x, hitPos.z), thisHitWaypoint);
+                        waypoints.Add(thisHitWaypoint);
+                    }
                 }
             }
         }
