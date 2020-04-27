@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Pathfinder : MonoBehaviour
 {
+    /*
     private const int directions = 8;
     private const int roundDigits = 3;
     private const float rayHight = 10f;
@@ -217,4 +218,6 @@ public class Pathfinder : MonoBehaviour
             }
         }
     }
+
+    */
 }

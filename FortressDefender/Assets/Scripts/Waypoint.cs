@@ -1,8 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Mathematics;
 using System;
 
+
+[Serializable]
+public struct Waypoint
+{
+    public int2 gridPosition;
+    public int2 worldPosition;
+    public int index;
+    public bool isWalkable;
+}
+
+
+/*
 [Serializable]
 public class Waypoint
 {
@@ -17,3 +30,4 @@ public class Waypoint
         this.position2D = new Vector2(position.x, position.z);
     }
 }
+*/

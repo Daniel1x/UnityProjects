@@ -2,70 +2,93 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Entities;
+using Unity.Burst;
+using Unity.Mathematics;
 
-[System.Serializable]
-public class PathNode : IEquatable<PathNode>
+[Serializable]
+[BurstCompile]
+public struct PathNode : IEquatable<PathNode>
 {
-    private const int DIGITS = 0;
+    public int x;
+    public int y;
 
-    public Vector3 position;
+    public int index;
 
-    public int gCost = int.MaxValue;
-    public int hCost = int.MaxValue;
-    public int fCost = int.MaxValue;
+    public int gCost;
+    public int hCost;
+    public int fCost;
+
+    public bool isWalkable;
+
+    public int cameFromNodeIndex;
+
+    public PathNode(int x, int y, int gridWidth, bool isWalkable) : this()
+    {
+        this.x = x;
+        this.y = y;
+        this.CalculateIndex(gridWidth);
+        this.gCost = int.MaxValue;
+        this.hCost = int.MaxValue;
+        this.CalculateFCost();
+        this.isWalkable = isWalkable;
+        this.cameFromNodeIndex = -1;
+    }
+
+    public PathNode(Waypoint w)
+    {
+        this.x = w.gridPosition.x;
+        this.y = w.gridPosition.y;
+        this.index = w.index;
+        this.gCost = int.MaxValue;
+        this.hCost = int.MaxValue;
+        this.fCost = int.MaxValue;
+        this.isWalkable = w.isWalkable;
+        this.cameFromNodeIndex = -1;
+    }
+
+    public int2 XY
+    {
+        get => new int2(x, y);
+        set
+        {
+            x = value.x;
+            y = value.y;
+        }
+    }
+
+    public void CalculateIndex(int gridWidth)
+    {
+        index = x + y * gridWidth;
+    }
+
+    public static int CalculateIndexOfNode(int x, int y, int gridWidth)
+    {
+        return x + y * gridWidth;
+    }
+
+    public static int CalculateIndexOfNode(int2 gridPosition, int gridWidth)
+    {
+        return gridPosition.x + gridPosition.y * gridWidth;
+    }
 
     public void CalculateFCost()
     {
         fCost = gCost + hCost;
     }
 
-    public PathNode previousNode = null;
-
-    public PathNode(Vector3 worldPosition)
-    {
-        this.position = Round(worldPosition, DIGITS);
-    }
-
-    private Vector3 Round(Vector3 v, int digits)
-    {
-        float x = Round(v.x, digits);
-        float y = Round(v.y, digits);
-        float z = Round(v.z, digits);
-        return new Vector3(x, y, z);
-    }
-
-    private float Round(float val, int digits)
-    {
-        float scaleFactor = Mathf.Pow(10, digits);
-        float temp = Mathf.Round(val * scaleFactor) / scaleFactor;
-        return temp;
-    }
-
-    public override bool Equals(object obj)
-    {
-        var node = obj as PathNode;
-        return node != null &&
-               position.Equals(node.position);
-    }
-
     public bool Equals(PathNode other)
     {
-        return other != null &&
-               position.Equals(other.position);
-    }
-
-    public override int GetHashCode()
-    {
-        return 1206833562 + EqualityComparer<Vector3>.Default.GetHashCode(position);
+        return this == other;
     }
 
     public static bool operator ==(PathNode node1, PathNode node2)
     {
-        return EqualityComparer<PathNode>.Default.Equals(node1, node2);
+        return node1.x == node2.x && node1.y == node2.y;
     }
 
     public static bool operator !=(PathNode node1, PathNode node2)
     {
-        return !(node1 == node2);
+        return node1.x != node2.x || node1.y != node2.y;
     }
 }

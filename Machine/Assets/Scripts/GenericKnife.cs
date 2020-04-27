@@ -26,10 +26,6 @@ public class GenericKnife : MonoBehaviour
     /// </summary>
     public float rangeOfRaycast = 1f;
     /// <summary>
-    /// Force update of values.
-    /// </summary>
-    public bool forceKnifeCreation = true;
-    /// <summary>
     /// Defines type of cuts handler.
     /// </summary>
     public bool handleCutsByLayer = true;
@@ -82,7 +78,9 @@ public class GenericKnife : MonoBehaviour
 
     private void Update()
     {
-        if (forceKnifeCreation && !knifeCreated)
+        float startTime = Time.realtimeSinceStartup;
+
+        if (!knifeCreated)
         {
             knifeCreated = true;
             CreateKnife(numberOfPoints, rangeOfRaycast);
@@ -91,6 +89,8 @@ public class GenericKnife : MonoBehaviour
         
         UpdateEdgesPositions();
         TryToCut();
+
+        Debug.Log(1000f * (Time.realtimeSinceStartup - startTime) + " ms.");
     }
 
     private class Cuts
@@ -239,7 +239,7 @@ public class GenericKnife : MonoBehaviour
         }
     }
 
-    private int[] GetLayersID(int triangle_ID, int[] meshTriangles, int numberOfVerticesPerLayer)
+    public static int[] GetLayersID(int triangle_ID, int[] meshTriangles, int numberOfVerticesPerLayer)
     {
         int[] layers_ID = new int[2];
         int[] triangleVertices = new int[3];

@@ -8,6 +8,24 @@ public class PathfindingCustomEditor : Editor
 {
     public override void OnInspectorGUI()
     {
+        base.OnInspectorGUI();
+        
+        Pathfinding pathfinding = (Pathfinding)target;
+        
+        if (GUILayout.Button("Create Path Nodes Array"))
+        {
+            pathfinding.CreateNodes();
+        }
+        if(GUILayout.Button("Find Path"))
+        {
+            pathfinding.FindPathToThePoint();
+        }
+    }
+
+
+    /*
+    public override void OnInspectorGUI()
+    {
         Pathfinding pathfinding = (Pathfinding)target;
 
         GUILayout.BeginHorizontal();
@@ -25,4 +43,5 @@ public class PathfindingCustomEditor : Editor
         
         base.OnInspectorGUI();
     }
+    */
 }

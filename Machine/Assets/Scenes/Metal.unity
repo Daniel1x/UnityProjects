@@ -3623,7 +3623,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  howToMove: 0
+  howToMove: 1
   constantMove: 1
   maxDelta: 0.05
 --- !u!114 &714605334
@@ -3638,10 +3638,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9170439ffd037df4090039da5ae4be23, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPoints: 45
+  numberOfPoints: 180
   drawPoints: 1
   rangeOfRaycast: 20
-  forceKnifeCreation: 1
   handleCutsByLayer: 1
   minimumMetalThickness: 0.01
 --- !u!23 &714605335
@@ -4817,6 +4816,50 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000390772}
   m_Mesh: {fileID: 541520216}
+--- !u!1 &1042179358
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1042179360}
+  - component: {fileID: 1042179359}
+  m_Layer: 0
+  m_Name: TestingJobsGO
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!114 &1042179359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042179358}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8754f830e9e70c4ba7271d085d0ff82, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useJobs: 0
+--- !u!4 &1042179360
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1042179358}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1045471020
 GameObject:
   m_ObjectHideFlags: 0
