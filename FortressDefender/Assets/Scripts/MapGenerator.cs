@@ -35,7 +35,7 @@ public class MapGenerator : MonoBehaviour
     [SerializeField] bool hasBackEntrance = false;
     [SerializeField] bool hasRightEntrance = false;
     [SerializeField] bool hasLeftEntrance = false;
-    [SerializeField] [Range(0f, 10f)] private float entranceSize = 1f;
+    [SerializeField] [Range(1, 10)] private int entranceSize = 1;
 
     private void CreateMap(float width, float hight, float length, Vector3 position, bool hasFrontEntrance, bool hasRightEntrance, bool hasBackEntrance, bool hasLeftEntrance, float entranceSize)
     {

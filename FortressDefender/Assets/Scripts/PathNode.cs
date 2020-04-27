@@ -23,6 +23,8 @@ public struct PathNode : IEquatable<PathNode>
 
     public int cameFromNodeIndex;
 
+    public float3 worldPosition;
+
     public PathNode(int x, int y, int gridWidth, bool isWalkable) : this()
     {
         this.x = x;
@@ -45,6 +47,7 @@ public struct PathNode : IEquatable<PathNode>
         this.fCost = int.MaxValue;
         this.isWalkable = w.isWalkable;
         this.cameFromNodeIndex = -1;
+        this.worldPosition = new float3(w.worldPosition.x, 0f, w.worldPosition.y);
     }
 
     public int2 XY

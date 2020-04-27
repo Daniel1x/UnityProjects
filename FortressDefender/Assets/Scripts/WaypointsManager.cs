@@ -18,7 +18,7 @@ public class WaypointsManager : MonoBehaviour
     private static int2 gridSize;
     public static int2 GridSize { get => gridSize; }
 
-    [HideInInspector] public Waypoint[] waypoints;
+    public Waypoint[] waypoints;
 
     private void Awake()
     {
@@ -106,12 +106,12 @@ public class WaypointsManager : MonoBehaviour
         return false;
     }
 
-    private static int CalculateIndex(int x,int y,int gridSizeX)
+    public static int CalculateIndex(int x,int y,int gridSizeX)
     {
         return x + (y * gridSizeX);
     }
 
-    private static int2 GetGridPositionFromWorldPosition(int2 worldPosition)
+    public static int2 GetGridPositionFromWorldPosition(int2 worldPosition)
     {
         if (worldPosition.x < mapBoundries.min.x || worldPosition.x > mapBoundries.max.x || 
             worldPosition.y < mapBoundries.min.y || worldPosition.y > mapBoundries.max.y)
@@ -122,7 +122,7 @@ public class WaypointsManager : MonoBehaviour
         return new int2(xDistance, yDistance);
     }
 
-    private static int GetIndexFromWorldPosition(int2 worldPosition)
+    public static int GetIndexFromWorldPosition(int2 worldPosition)
     {
         int2 gridPosition = GetGridPositionFromWorldPosition(worldPosition);
         return CalculateIndex(gridPosition.x, gridPosition.y, gridSize.x);

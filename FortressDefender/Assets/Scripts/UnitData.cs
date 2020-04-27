@@ -6,5 +6,6 @@ using Unity.Entities;
 [GenerateAuthoringComponent]
 public struct UnitData : IComponentData
 {
-
+    public int pathIndex;
+    public float unitSpeed;
 }

@@ -6,6 +6,7 @@ using Unity.Mathematics;
 using Unity.Jobs;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 using Unity.Transforms;
 using System;
 
@@ -17,24 +18,31 @@ public class PathfindingSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
-        Entities.ForEach((Entity entity, ref PathfindingParameters parameters) =>
+        NativeList<JobHandle> jobHandles = new NativeList<JobHandle>(Allocator.Temp);
+
+        Entities.ForEach((Entity entity, DynamicBuffer<PathPositionsBuffer> pathPositionsBuffer, ref PathfindingParameters parameters) =>
         {
             if (WaypointsManager.Instance != null)
             {
-                Debug.Log("FindPath!");
                 FindPathJob findPathJob = new FindPathJob
                 {
-                    startPosition = parameters.startPoint,
-                    endPosition = parameters.endPoint,
+                    startPosition = parameters.startGridPoint,
+                    endPosition = parameters.endGridPoint,
                     mapBoundries = WaypointsManager.MapBoundries,
                     gridSize = WaypointsManager.GridSize,
-                    waypoints = new NativeArray<Waypoint>(WaypointsManager.Instance.waypoints, Allocator.TempJob)
-            };
-                findPathJob.Run();
+                    waypoints = new NativeArray<Waypoint>(WaypointsManager.Instance.waypoints, Allocator.TempJob),
+                    pathPositionsBuffer = pathPositionsBuffer,
+                    entity = entity,
+                    unitDataComponentFromEntity = GetComponentDataFromEntity<UnitData>()
+
+                };
+                jobHandles.Add(findPathJob.Schedule());
                 
                 PostUpdateCommands.RemoveComponent<PathfindingParameters>(entity);
             }
         });
+
+        JobHandle.CompleteAll(jobHandles);
     }
 
     [BurstCompile]
@@ -45,6 +53,9 @@ public class PathfindingSystem : ComponentSystem
         public MapBoundries mapBoundries;
         public int2 gridSize;
         [DeallocateOnJobCompletion] [ReadOnly] public NativeArray<Waypoint> waypoints;
+        public DynamicBuffer<PathPositionsBuffer> pathPositionsBuffer;
+        public Entity entity;
+        public ComponentDataFromEntity<UnitData> unitDataComponentFromEntity;
         
         public void Execute()
         {
@@ -146,16 +157,20 @@ public class PathfindingSystem : ComponentSystem
 
             PathNode endNode = pathNodes[endNodeIndex];
 
+            pathPositionsBuffer.Clear();
             if (endNode.cameFromNodeIndex == -1)
             {
-                //No path!
+                Debug.Log("There is a entity with blocked path!");
+                UnitData data = unitDataComponentFromEntity[entity];
+                data.pathIndex = -1;
+                unitDataComponentFromEntity[entity] = data;
             }
             else
             {
-                NativeList<int2> path = CalculatePath(pathNodes, endNode);
-                Debug.Log("Path!");
-                path.Dispose();
-
+                CalculatePath(pathNodes, endNode, pathPositionsBuffer);
+                UnitData data = unitDataComponentFromEntity[entity];
+                data.pathIndex = pathPositionsBuffer.Length - 1;
+                unitDataComponentFromEntity[entity] = data;
             }
 
             openList.Dispose();
@@ -163,8 +178,8 @@ public class PathfindingSystem : ComponentSystem
             neighbourOffsetArray.Dispose();
             pathNodes.Dispose();
         }
-
-        private NativeArray<PathNode> GetPathNodesFromWaypoints(NativeArray<Waypoint> waypoints)
+        
+        private static NativeArray<PathNode> GetPathNodesFromWaypoints(NativeArray<Waypoint> waypoints)
         {
             int numWaypoints = waypoints.Length;
             NativeArray<PathNode> pathNodes = new NativeArray<PathNode>(numWaypoints, Allocator.Temp);
@@ -182,6 +197,26 @@ public class PathfindingSystem : ComponentSystem
             int difference = math.abs(xDistance - yDistance);
             int distance = DIAGONAL_MOVE_COST * math.min(xDistance, yDistance) + STRAIGHT_MOVE_COST * difference;
             return distance;
+        }
+
+        private static void CalculatePath(NativeArray<PathNode> pathNodes, PathNode endNode, DynamicBuffer<PathPositionsBuffer> pathPositionsBuffer)
+        {
+            if (endNode.cameFromNodeIndex == -1)
+            {
+                //There is no path!
+            }
+            else
+            {
+                pathPositionsBuffer.Add(new PathPositionsBuffer { worldPosition = endNode.worldPosition });
+                PathNode thisNode = endNode;
+
+                while (thisNode.cameFromNodeIndex != -1)
+                {
+                    PathNode cameFromNode = pathNodes[thisNode.cameFromNodeIndex];
+                    pathPositionsBuffer.Add(new PathPositionsBuffer { worldPosition = cameFromNode.worldPosition });
+                    thisNode = cameFromNode;
+                }
+            }
         }
 
         private static NativeList<int2> CalculatePath(NativeArray<PathNode> pathNodes, PathNode endNode)

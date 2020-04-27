@@ -8,6 +8,9 @@ using System;
 [GenerateAuthoringComponent]
 public struct PathfindingParameters : IComponentData
 {
-    public int2 startPoint;
-    public int2 endPoint;
+    public int2 startGridPoint { get => WaypointsManager.GetGridPositionFromWorldPosition(startWorldPoint); }
+    public int2 endGridPoint { get => WaypointsManager.GetGridPositionFromWorldPosition(endWorldPoint); }
+
+    public int2 startWorldPoint;
+    public int2 endWorldPoint;
 }

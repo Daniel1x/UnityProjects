@@ -14,14 +14,26 @@ public class UnitMovementSystem : ComponentSystem
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Entities.ForEach((Entity entity, ref Translation position, ref UnitData unitData) =>
+            Entities.ForEach((Entity entity, ref Translation position, ref UnitData unitData, ref TargetPositionData targetData) =>
             {
                 EntityManager.AddComponentData(entity, new PathfindingParameters
                 {
-                    startPoint = new int2(0, 0),
-                    endPoint = new int2(2, 2)
+                    startWorldPoint = targetData.startWorldPosition,
+                    endWorldPoint = targetData.endWorldPosition
                 });
             });
         }
+
+        Entities.ForEach((DynamicBuffer<PathPositionsBuffer> path, ref Translation position, ref UnitData unitData) =>
+        {
+            if (unitData.pathIndex >= 0)
+            {
+                float3 pathPosition = path[unitData.pathIndex].worldPosition;
+                float3 moveDirection = math.normalize(pathPosition - position.Value);
+                position.Value += moveDirection * unitData.unitSpeed * Time.DeltaTime;
+
+                if (math.distance(position.Value, pathPosition) < 0.1f) unitData.pathIndex--;
+            }
+        });
     }
 }
