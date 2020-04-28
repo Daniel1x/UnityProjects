@@ -231,6 +231,17 @@ public class MapGenerator : MonoBehaviour
 
     public void CreateRandomMapFragment()
     {
+        width = UnityEngine.Random.Range(4, 20);
+        hight = UnityEngine.Random.Range(1, 6);
+        length = UnityEngine.Random.Range(4, 20);
+        hasFrontEntrance = UnityEngine.Random.Range(0f, 1f) > 0.5f;
+        hasBackEntrance = UnityEngine.Random.Range(0f, 1f) > 0.5f;
+        hasRightEntrance = UnityEngine.Random.Range(0f, 1f) > 0.5f;
+        hasLeftEntrance = UnityEngine.Random.Range(0f, 1f) > 0.5f;
+        entranceSize = UnityEngine.Random.Range(1, 4);
+        CreateMap(width, hight, length, Vector3.zero, hasFrontEntrance, hasRightEntrance, hasBackEntrance, hasLeftEntrance, entranceSize);
+
+        /*
         CreateMap(UnityEngine.Random.Range(4, 50),
                   UnityEngine.Random.Range(1, 10),
                   UnityEngine.Random.Range(4, 50),
@@ -240,6 +251,7 @@ public class MapGenerator : MonoBehaviour
                   UnityEngine.Random.Range(0f, 1f) > 0.5f,
                   UnityEngine.Random.Range(0f, 1f) > 0.5f,
                   UnityEngine.Random.Range(0.5f, 3f));
+        */
     }
 
     private void DestroyAllChildrens(Transform parent, bool inEditorMode = false)

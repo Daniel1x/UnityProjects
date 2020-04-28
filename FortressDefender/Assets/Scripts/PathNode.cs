@@ -85,6 +85,21 @@ public struct PathNode : IEquatable<PathNode>
         return this == other;
     }
 
+    public override bool Equals(object obj)
+    {
+        return base.Equals(obj);
+    }
+
+    public override int GetHashCode()
+    {
+        return base.GetHashCode();
+    }
+
+    public override string ToString()
+    {
+        return base.ToString();
+    }
+
     public static bool operator ==(PathNode node1, PathNode node2)
     {
         return node1.x == node2.x && node1.y == node2.y;

@@ -10,7 +10,7 @@ using System;
 
 public class WaypointsManager : MonoBehaviour
 {
-    [SerializeField] private MapBoundries maximumMapLimits;
+    [SerializeField] private MapBoundries maximumMapLimits = new MapBoundries();
 
     public static WaypointsManager Instance;
     private static MapBoundries mapBoundries;
@@ -78,7 +78,7 @@ public class WaypointsManager : MonoBehaviour
             {
                 int2 gridPosition = new int2(x, y);
                 int2 worldPosition = new int2(mapBoundries.min.x + x, mapBoundries.min.y + y);
-                int index = CalculateIndex(x, y, gridSize.x);
+                int index = Func.CalculateIndex(x, y, gridSize.x);
                 bool isWalkable = CheckIfWaypointIsWalkable(x, y);
                 waypoints[index] = new Waypoint
                 {
@@ -106,26 +106,68 @@ public class WaypointsManager : MonoBehaviour
         return false;
     }
 
-    public static int CalculateIndex(int x,int y,int gridSizeX)
+    [BurstCompile]
+    public struct Func
     {
-        return x + (y * gridSizeX);
-    }
+        public static int CalculateIndex(int x, int y, int gridSizeX)
+        {
+            return x + (y * gridSizeX);
+        }
 
-    public static int2 GetGridPositionFromWorldPosition(int2 worldPosition)
-    {
-        if (worldPosition.x < mapBoundries.min.x || worldPosition.x > mapBoundries.max.x || 
-            worldPosition.y < mapBoundries.min.y || worldPosition.y > mapBoundries.max.y)
-            Debug.LogError("Invalid world position!");
+        public static int2 GetGridPositionFromWorldPosition(int2 worldPosition)
+        {
+            if (worldPosition.x < mapBoundries.min.x || worldPosition.x > mapBoundries.max.x ||
+                worldPosition.y < mapBoundries.min.y || worldPosition.y > mapBoundries.max.y)
+                Debug.LogError("Invalid world position!");
 
-        int xDistance = worldPosition.x - mapBoundries.min.x;
-        int yDistance = worldPosition.y - mapBoundries.min.y;
-        return new int2(xDistance, yDistance);
-    }
+            int xDistance = worldPosition.x - mapBoundries.min.x;
+            int yDistance = worldPosition.y - mapBoundries.min.y;
+            return new int2(xDistance, yDistance);
+        }
 
-    public static int GetIndexFromWorldPosition(int2 worldPosition)
-    {
-        int2 gridPosition = GetGridPositionFromWorldPosition(worldPosition);
-        return CalculateIndex(gridPosition.x, gridPosition.y, gridSize.x);
+        public static int GetIndexFromWorldPosition(int2 worldPosition)
+        {
+            int2 gridPosition = GetGridPositionFromWorldPosition(worldPosition);
+            return CalculateIndex(gridPosition.x, gridPosition.y, gridSize.x);
+        }
+
+        public static int GetRandomWalkableWaypointIndex(Waypoint[] waypoints)
+        {
+            int maxID = gridSize.x * gridSize.y;
+            while (true)
+            {
+                int id = UnityEngine.Random.Range(0, maxID);
+                if (waypoints[id].isWalkable)
+                {
+                    return id;
+                }
+            }
+        }
+
+        public static int2 GetRandomWalkableWaypoint()
+        {
+            Waypoint[] waypoints = WaypointsManager.Instance.waypoints;
+            int maxID = gridSize.x * gridSize.y;
+            while (true)
+            {
+                int id = UnityEngine.Random.Range(0, maxID);
+                if (waypoints[id].isWalkable)
+                {
+                    return waypoints[id].worldPosition;
+                }
+            }
+        }
+
+        public static int2 RoundToInt2(int2 worldPosition)
+        {
+            return new int2(math.round(worldPosition));
+        }
+
+        public static int2 RoundToInt2(float3 worldPosition)
+        {
+            float2 v = new float2(worldPosition.x, worldPosition.z);
+            return new int2(math.round(v));
+        }
     }
 }
 
