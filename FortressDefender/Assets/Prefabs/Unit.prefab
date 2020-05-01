@@ -12,8 +12,6 @@ GameObject:
   - component: {fileID: 3109311877120263870}
   - component: {fileID: 3109311877120263871}
   - component: {fileID: 3109311877120263857}
-  - component: {fileID: 3109311877120263868}
-  - component: {fileID: 3109311877120263869}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -75,40 +73,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ConversionMode: 0
---- !u!114 &3109311877120263868
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3109311877120263859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: af99e94c1aa4a52488a68652acc16b22, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  endWorldPosition:
-    x: -51
-    y: 14
---- !u!114 &3109311877120263869
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3109311877120263859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4778b674d83aa3244927dd29135f8ead, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  needNewPath: 1
-  startWorldPoint:
-    x: -55
-    y: 14
-  endWorldPoint:
-    x: -50
-    y: 14
 --- !u!1 &3109311877127647779
 GameObject:
   m_ObjectHideFlags: 0

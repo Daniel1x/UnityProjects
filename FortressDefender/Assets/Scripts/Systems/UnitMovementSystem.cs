@@ -12,6 +12,7 @@ public class UnitMovementSystem : ComponentSystem
 {
     protected override void OnUpdate()
     {
+        /*
         Entities.ForEach((Entity entity, ref Translation position, ref UnitData unitData, ref TargetPositionData targetData) =>
         {
             EntityManager.AddComponentData(entity, new PathfindingParameters { needNewPath = true,
@@ -19,7 +20,8 @@ public class UnitMovementSystem : ComponentSystem
                                                                                endWorldPoint = targetData.endWorldPosition });
             PostUpdateCommands.RemoveComponent<TargetPositionData>(entity);
         });
-        
+        */
+
         Entities.ForEach((Entity entity, DynamicBuffer<PathPositionsBuffer> path, ref Translation position, ref UnitData unitData) =>
         {
             if (unitData.pathIndex >= 0)
@@ -35,7 +37,11 @@ public class UnitMovementSystem : ComponentSystem
             }
             else
             {
-                EntityManager.AddComponentData(entity, new TargetPositionData { endWorldPosition = WaypointsManager.Func.GetRandomWalkableWaypoint() });
+                //EntityManager.AddComponentData(entity, new TargetPositionData { endWorldPosition = WaypointsManager.Func.GetRandomWalkableWaypoint() });
+
+                EntityManager.AddComponentData(entity, new PathfindingParameters { needNewPath = true,
+                                                                                   startWorldPoint = WaypointsManager.Func.RoundToInt2(position.Value),
+                                                                                   endWorldPoint = WaypointsManager.Func.GetRandomWalkableWaypoint()});
             }
         });
     }
