@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using Unity.Mathematics;
+using Unity.Jobs;
+using Unity.Burst;
 using System;
 
 [GenerateAuthoringComponent]
+[BurstCompile]
 public struct PathfindingParameters : IComponentData
 {
     public int2 startGridPoint { get => WaypointsManager.Func.GetGridPositionFromWorldPosition(startWorldPoint); }

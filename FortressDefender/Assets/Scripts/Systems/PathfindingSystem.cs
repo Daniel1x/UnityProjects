@@ -18,14 +18,16 @@ public class PathfindingSystem : ComponentSystem
 
     protected override void OnUpdate()
     {
+        // List of jobs.
         NativeList<JobHandle> jobHandles = new NativeList<JobHandle>(Allocator.Temp);
 
         Entities.ForEach((Entity entity, DynamicBuffer<PathPositionsBuffer> pathPositionsBuffer, ref PathfindingParameters parameters) =>
         {
-            if (WaypointsManager.Instance != null)
+            if (WaypointsManager.Instance != null) // If there is WaypointManager.Instance
             {
-                if (parameters.needNewPath)
+                if (parameters.needNewPath) // If new path needs to be created
                 {
+                    // Create pathfinding job for current entity.
                     FindPathJob findPathJob = new FindPathJob
                     {
                         startPosition = parameters.startGridPoint,
@@ -38,13 +40,15 @@ public class PathfindingSystem : ComponentSystem
                         unitDataComponentFromEntity = GetComponentDataFromEntity<UnitData>()
 
                     };
+                    // Schedule current pathfinding job.
                     jobHandles.Add(findPathJob.Schedule());
+                    // Mark that there is no need to create new path.
                     parameters.needNewPath = false;
                 }                
-                //PostUpdateCommands.RemoveComponent<PathfindingParameters>(entity);
             }
         });
 
+        // Complete all pathfinding jobs.
         JobHandle.CompleteAll(jobHandles);
     }
 

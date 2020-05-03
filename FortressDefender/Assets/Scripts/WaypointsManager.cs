@@ -11,6 +11,7 @@ using System;
 public class WaypointsManager : MonoBehaviour
 {
     [SerializeField] private MapBoundries maximumMapLimits = new MapBoundries();
+    public Transform target = null;
 
     public static WaypointsManager Instance;
     private static MapBoundries mapBoundries;
@@ -18,7 +19,7 @@ public class WaypointsManager : MonoBehaviour
     private static int2 gridSize;
     public static int2 GridSize { get => gridSize; }
 
-    public Waypoint[] waypoints;
+    [HideInInspector] public Waypoint[] waypoints;
 
     private void Awake()
     {
@@ -158,19 +159,31 @@ public class WaypointsManager : MonoBehaviour
             }
         }
 
-        public static int2 RoundToInt2(int2 worldPosition)
+        public static int2 RoundToGrid(int2 worldPosition)
         {
             return new int2(math.round(worldPosition));
         }
 
-        public static int2 RoundToInt2(float3 worldPosition)
+        public static int2 RoundToGrid(float3 worldPosition)
         {
             float2 v = new float2(worldPosition.x, worldPosition.z);
             return new int2(math.round(v));
         }
+
+        public static int2 GetTargetPosition()
+        {
+            return RoundToGrid(WaypointsManager.Instance.target.position);
+        }
     }
 }
 
+
+/// <summary>
+/// Structure defining the limits of the grid. 
+/// The min and max values mean the plane values, 
+/// where the XY plane for int2 means the XZ plane in global coordinates.
+/// </summary>
+[BurstCompile]
 [Serializable]
 public struct MapBoundries
 {
