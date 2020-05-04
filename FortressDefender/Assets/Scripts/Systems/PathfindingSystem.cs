@@ -32,7 +32,6 @@ public class PathfindingSystem : ComponentSystem
                     {
                         startPosition = parameters.startGridPoint,
                         endPosition = parameters.endGridPoint,
-                        mapBoundries = WaypointsManager.MapBoundries,
                         gridSize = WaypointsManager.GridSize,
                         waypoints = new NativeArray<Waypoint>(WaypointsManager.Instance.waypoints, Allocator.TempJob),
                         pathPositionsBuffer = pathPositionsBuffer,
@@ -55,19 +54,41 @@ public class PathfindingSystem : ComponentSystem
     [BurstCompile]
     private struct FindPathJob : IJob
     {
+        /// <summary>
+        /// Start position in grid coordinates.
+        /// </summary>
         public int2 startPosition;
+        /// <summary>
+        /// Target position in grid coordinates.
+        /// </summary>
         public int2 endPosition;
-        public MapBoundries mapBoundries;
+        /// <summary>
+        /// Size of waypoints grid.
+        /// </summary>
         public int2 gridSize;
+        /// <summary>
+        /// Native array of waypoints. [ReadOnly]
+        /// </summary>
         [DeallocateOnJobCompletion] [ReadOnly] public NativeArray<Waypoint> waypoints;
+        /// <summary>
+        /// Dynamic path position buffer, stores information about the world positions of path nodes.
+        /// </summary>
         public DynamicBuffer<PathPositionsBuffer> pathPositionsBuffer;
+        /// <summary>
+        /// Current entity.
+        /// </summary>
         public Entity entity;
+        /// <summary>
+        /// Unit data components from entities.
+        /// </summary>
         public ComponentDataFromEntity<UnitData> unitDataComponentFromEntity;
         
         public void Execute()
         {
+            // Creating pathnodes native array.
             NativeArray<PathNode> pathNodes = GetPathNodesFromWaypoints(waypoints);
 
+            // For every pathnode on grid, calculate heuristic distance cost.
             for (int x = 0; x < gridSize.x; x++)
             {
                 for (int y = 0; y < gridSize.y; y++)
@@ -78,16 +99,21 @@ public class PathfindingSystem : ComponentSystem
                 }
             }
 
+            // Find indexes of start and end nodes.
             int startNodeIndex = PathNode.CalculateIndexOfNode(startPosition, gridSize.x);
             int endNodeIndex = PathNode.CalculateIndexOfNode(endPosition, gridSize.x);
 
+            // Set start node values.
             PathNode startNode = pathNodes[startNodeIndex];
             startNode.gCost = 0;
             startNode.CalculateFCost();
             pathNodes[startNode.index] = startNode;
 
+            // Create the lists needed to calculate the path search using the A * algorithm.
             NativeList<int> openList = new NativeList<int>(Allocator.Temp);
             NativeList<int> closedList = new NativeList<int>(Allocator.Temp);
+
+            // Create simple native array of offsets to neighbour nodes.
             NativeArray<int2> neighbourOffsetArray = new NativeArray<int2>(8, Allocator.Temp);
             neighbourOffsetArray[0] = new int2(0, 1);
             neighbourOffsetArray[1] = new int2(1, 1);
@@ -98,8 +124,10 @@ public class PathfindingSystem : ComponentSystem
             neighbourOffsetArray[6] = new int2(-1, 0);
             neighbourOffsetArray[7] = new int2(-1, 1);
 
+            // Add start node to open list.
             openList.Add(startNode.index);
 
+            // Start searching until there are no nodes in the open list.
             while (openList.Length > 0)
             {
                 int thisNodeIndex = GetLowestFCostNodeIndex(openList, pathNodes);
@@ -108,6 +136,7 @@ public class PathfindingSystem : ComponentSystem
                     break; // End node reached!
                 }
 
+                // Get lowest fCost node from pathnodes array.
                 PathNode thisNode = pathNodes[thisNodeIndex];
 
                 // Remove this node from open list.
@@ -120,32 +149,40 @@ public class PathfindingSystem : ComponentSystem
                     }
                 }
 
+                // Add this node to the closed list as it has already been searched.
                 closedList.Add(thisNodeIndex);
 
+                // For every neighbour node
                 for (int i = 0; i < neighbourOffsetArray.Length; i++)
                 {
+                    // Get neighbour node position.
                     int2 offset = neighbourOffsetArray[i];
                     int2 neighbourPosition = offset + thisNode.XY;
 
+                    // If the neighbour node is not in the grid, skip it and continue.
                     if (!IsPositionInsideGrid(neighbourPosition, gridSize))
                     {
                         continue;
                     }
 
+                    // If the index of a neighbour node is in a closed list, so the node has been searched, skip it and continue.
                     int neighbourNodeIndex = PathNode.CalculateIndexOfNode(neighbourPosition, gridSize.x);
                     if (closedList.Contains(neighbourNodeIndex))
                     {
                         continue;
                     }
 
+                    // If neighbour node is not walkable, skip it and continue.
                     PathNode neighbourNode = pathNodes[neighbourNodeIndex];
                     if (!neighbourNode.isWalkable)
                     {
                         continue;
                     }
 
+                    // Calculate the tentative GCost for the neighbour node, 
+                    // and if it is lower than the actual values ​​in the neighbour node, 
+                    // change its values ​​and add it to the open list if it does not already exist there.
                     int2 thisNodePosition = thisNode.XY;
-
                     int tentativeGCost = thisNode.gCost + CalculateDistanceCost(thisNodePosition, neighbourPosition);
                     if (tentativeGCost < neighbourNode.gCost)
                     {
@@ -162,31 +199,40 @@ public class PathfindingSystem : ComponentSystem
                 }
             }
 
+            // After searching through all the nodes in open list, get end node.
             PathNode endNode = pathNodes[endNodeIndex];
 
+            // Clear dynamic path buffer.
             pathPositionsBuffer.Clear();
+
+            // If end node has no "previous" node, there is no path to it.
+            UnitData data = unitDataComponentFromEntity[entity];
             if (endNode.cameFromNodeIndex == -1)
             {
                 Debug.Log("There is a entity with blocked path!");
-                UnitData data = unitDataComponentFromEntity[entity];
                 data.pathIndex = -1;
-                unitDataComponentFromEntity[entity] = data;
             }
-            else
+            else // Otherwise, there is a path, so calculate it and fill in pathPositionsBuffer.
             {
-                CalculatePath(pathNodes, endNode, pathPositionsBuffer);
-                UnitData data = unitDataComponentFromEntity[entity];
+                CalculatePath(pathNodes, endNode, ref pathPositionsBuffer);
                 data.pathIndex = pathPositionsBuffer.Length - 1;
-                unitDataComponentFromEntity[entity] = data;
             }
+            // Update the entity unit data to follow the path.
+            unitDataComponentFromEntity[entity] = data;
 
+            // Dispose all native lists and arrays.
             openList.Dispose();
             closedList.Dispose();
             neighbourOffsetArray.Dispose();
             pathNodes.Dispose();
         }
         
-        private static NativeArray<PathNode> GetPathNodesFromWaypoints(NativeArray<Waypoint> waypoints)
+        /// <summary>
+        /// Creates native array of path nodes from native array of waypoints.
+        /// </summary>
+        /// <param name="waypoints">Native list of waypoints.</param>
+        /// <returns></returns>
+        private static NativeArray<PathNode> GetPathNodesFromWaypoints([ReadOnly] NativeArray<Waypoint> waypoints)
         {
             int numWaypoints = waypoints.Length;
             NativeArray<PathNode> pathNodes = new NativeArray<PathNode>(numWaypoints, Allocator.Temp);
@@ -197,6 +243,12 @@ public class PathfindingSystem : ComponentSystem
             return pathNodes;
         }
         
+        /// <summary>
+        /// Function that calculates heuristic distance cost between two points on grid.
+        /// </summary>
+        /// <param name="from">First position on grid.</param>
+        /// <param name="to">Second position on grid.</param>
+        /// <returns></returns>
         private static int CalculateDistanceCost(int2 from, int2 to)
         {
             int xDistance = math.abs(from.x - to.x);
@@ -206,7 +258,13 @@ public class PathfindingSystem : ComponentSystem
             return distance;
         }
 
-        private static void CalculatePath(NativeArray<PathNode> pathNodes, PathNode endNode, DynamicBuffer<PathPositionsBuffer> pathPositionsBuffer)
+        /// <summary>
+        /// Function that fills the dynamic buffer with the global position of nodes on the path.
+        /// </summary>
+        /// <param name="pathNodes">Native array of pathnodes.</param>
+        /// <param name="endNode">Target node.</param>
+        /// <param name="pathPositionsBuffer">Reference to dynamic buffer of path positions.</param>
+        private static void CalculatePath(NativeArray<PathNode> pathNodes, PathNode endNode, ref DynamicBuffer<PathPositionsBuffer> pathPositionsBuffer)
         {
             if (endNode.cameFromNodeIndex == -1)
             {
@@ -226,28 +284,12 @@ public class PathfindingSystem : ComponentSystem
             }
         }
 
-        private static NativeList<int2> CalculatePath(NativeArray<PathNode> pathNodes, PathNode endNode)
-        {
-            if (endNode.cameFromNodeIndex == -1)
-            {
-                return new NativeList<int2>(Allocator.Temp);
-            }
-            else
-            {
-                NativeList<int2> path = new NativeList<int2>(Allocator.Temp);
-                path.Add(endNode.XY);
-
-                PathNode thisNode = endNode;
-                while (thisNode.cameFromNodeIndex != -1)
-                {
-                    PathNode cameFromNode = pathNodes[thisNode.cameFromNodeIndex];
-                    path.Add(cameFromNode.XY);
-                    thisNode = cameFromNode;
-                }
-                return path;
-            }
-        }
-
+        /// <summary>
+        /// Function to check if the position is in the grid.
+        /// </summary>
+        /// <param name="gridPosition">Position in grid coordinates.</param>
+        /// <param name="gridSize">Size of grid.</param>
+        /// <returns></returns>
         private static bool IsPositionInsideGrid(int2 gridPosition, int2 gridSize)
         {
             return gridPosition.x >= 0 &&
@@ -256,6 +298,12 @@ public class PathfindingSystem : ComponentSystem
                    gridPosition.y < gridSize.y;
         }
 
+        /// <summary>
+        /// Function that returns index of pathnode from pathnodes list with the lowest fCost value.
+        /// </summary>
+        /// <param name="openList">List of indexes for pathnodes in the open list, available for search.</param>
+        /// <param name="pathNodes">Native array of all the pathnodes.</param>
+        /// <returns></returns>
         private static int GetLowestFCostNodeIndex(NativeList<int> openList, NativeArray<PathNode> pathNodes)
         {
             PathNode lowestFCostPathNode = pathNodes[openList[0]];

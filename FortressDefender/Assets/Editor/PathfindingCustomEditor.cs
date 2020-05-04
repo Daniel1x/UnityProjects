@@ -16,32 +16,9 @@ public class PathfindingCustomEditor : Editor
         {
             pathfinding.CreateNodes();
         }
-        if(GUILayout.Button("Find Path"))
+        if (GUILayout.Button("Find Path")) 
         {
             pathfinding.FindPathToThePoint();
         }
     }
-
-
-    /*
-    public override void OnInspectorGUI()
-    {
-        Pathfinding pathfinding = (Pathfinding)target;
-
-        GUILayout.BeginHorizontal();
-
-        if (GUILayout.Button("Calculate path"))
-        {
-            pathfinding.FindPath();
-        }
-        if(GUILayout.Button("Show walkable"))
-        {
-            pathfinding.ShowWalkableNodes();
-        }
-
-        GUILayout.EndHorizontal();
-        
-        base.OnInspectorGUI();
-    }
-    */
 }

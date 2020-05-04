@@ -8,19 +8,47 @@ using Unity.Jobs;
 using Unity.Burst;
 using System;
 
+/// <summary>
+/// Class used to manage waypoints.
+/// </summary>
 public class WaypointsManager : MonoBehaviour
 {
+    /// <summary>
+    /// Maximum limits from which grid matching begins.
+    /// </summary>
     [SerializeField] private MapBoundries maximumMapLimits = new MapBoundries();
+    /// <summary>
+    /// Transform of the gameobject that represents the target point.
+    /// </summary>
     public Transform target = null;
-
+    /// <summary>
+    /// Waypoint Manager Instance. (Singleton pattern)
+    /// </summary>
     public static WaypointsManager Instance;
+    /// <summary>
+    /// Map boundaries after grid matching.
+    /// </summary>
     private static MapBoundries mapBoundries;
+    /// <summary>
+    /// Map boundaries after grid matching.
+    /// </summary>
     public static MapBoundries MapBoundries { get => mapBoundries; }
+    /// <summary>
+    /// The size of the waypoints grid.
+    /// </summary>
     private static int2 gridSize;
+    /// <summary>
+    /// The size of the waypoints grid.
+    /// </summary>
     public static int2 GridSize { get => gridSize; }
-
+    /// <summary>
+    /// Grid of waypoints, stored as array.
+    /// </summary>
     [HideInInspector] public Waypoint[] waypoints;
 
+    /// <summary>
+    /// Singleton pattern.
+    /// </summary>
     private void Awake()
     {
         if (FindObjectsOfType<WaypointsManager>().Length > 1 && WaypointsManager.Instance != this)
@@ -33,12 +61,18 @@ public class WaypointsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Boundaries matching and creating waypoints grid.
+    /// </summary>
     private void Start()
     {
         FindMapSize();
         CreateWaypoints();
     }
 
+    /// <summary>
+    /// Adjusting limits to the size of the map.
+    /// </summary>
     private void FindMapSize()
     {
         MapBoundries limitSize = maximumMapLimits;
@@ -54,7 +88,17 @@ public class WaypointsManager : MonoBehaviour
         mapBoundries = boundries;
     }
 
-    private int FindBoundry(int nRays, float rayLength, Vector3 startPos, Vector3 rayDirection, Vector3 stepDirection, bool findXorY)
+    /// <summary>
+    /// Function that finds limits of current map by casting rays with passed values.
+    /// </summary>
+    /// <param name="nRays">Maximum number of casted rays.</param>
+    /// <param name="rayLength">Length of ray.</param>
+    /// <param name="startPos">The starting position from which the rays are cast.</param>
+    /// <param name="rayDirection">The direction of casted rays.</param>
+    /// <param name="stepDirection">Vector that specifies the direction of the ray projection step.</param>
+    /// <param name="findXnotY">True if you are looking for limits on X axis, or false when looking for limits on Y axis (Z axis in world coords).</param>
+    /// <returns></returns>
+    private int FindBoundry(int nRays, float rayLength, Vector3 startPos, Vector3 rayDirection, Vector3 stepDirection, bool findXnotY)
     {
         Vector3 rayPos = startPos;
         RaycastHit hit;
@@ -62,13 +106,17 @@ public class WaypointsManager : MonoBehaviour
         {
             if (Physics.Raycast(rayPos, rayDirection, out hit, rayLength))
             {
-                return findXorY ? Mathf.RoundToInt(hit.point.x) : Mathf.RoundToInt(hit.point.z);
+                return findXnotY ? Mathf.RoundToInt(hit.point.x) : Mathf.RoundToInt(hit.point.z);
             }
             rayPos += stepDirection;
         }
         return 0;
     }
 
+    /// <summary>
+    /// Function that creates waypoints grid as array structure. 
+    /// Waypoints are created with all values ​​and tested to see if they are walkable.
+    /// </summary>
     private void CreateWaypoints()
     {
         gridSize = mapBoundries.max - mapBoundries.min + new int2(1, 1);
@@ -92,6 +140,12 @@ public class WaypointsManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Function that checks if waypoint on passed position is walkable.
+    /// </summary>
+    /// <param name="x">X position on grid.</param>
+    /// <param name="y">Y position on grid.</param>
+    /// <returns></returns>
     private bool CheckIfWaypointIsWalkable(int x, int y)
     {
         float rayLength = 10f;
@@ -107,69 +161,159 @@ public class WaypointsManager : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// Struct used by Burst Compiler to improve performance.
+    /// </summary>
     [BurstCompile]
     public struct Func
     {
+        /// <summary>
+        /// Function that calculates the index with XY position on a grid in a flat array.
+        /// </summary>
+        /// <param name="x">X position on grid.</param>
+        /// <param name="y">Y position on grid.</param>
+        /// <param name="gridSizeX">Width of grid (value of int2.x)</param>
+        /// <returns></returns>
         public static int CalculateIndex(int x, int y, int gridSizeX)
         {
             return x + (y * gridSizeX);
         }
 
+        /// <summary>
+        /// Function that calculates the index with XY position on a grid in a flat array.
+        /// </summary>
+        /// <param name="gridXYCoordinates">XY position on grid.</param>
+        /// <param name="gridSizeX">Width of grid (value of int2.x)</param>
+        /// <returns></returns>
+        public static int CalculateIndex(int2 gridXYCoordinates, int gridSizeX)
+        {
+            return gridXYCoordinates.x + (gridXYCoordinates.y * gridSizeX);
+        }
+
+        /// <summary>
+        /// Function that calculates position on grid, from world coordinates.
+        /// </summary>
+        /// <param name="worldPosition">Position in world coordinates.</param>
+        /// <returns></returns>
         public static int2 GetGridPositionFromWorldPosition(int2 worldPosition)
         {
-            if (worldPosition.x < mapBoundries.min.x || worldPosition.x > mapBoundries.max.x ||
-                worldPosition.y < mapBoundries.min.y || worldPosition.y > mapBoundries.max.y)
-                Debug.LogError("Invalid world position!");
+            MapBoundries boundries = WaypointsManager.mapBoundries;
+            if (worldPosition.x < boundries.min.x || worldPosition.x > boundries.max.x ||
+                worldPosition.y < boundries.min.y || worldPosition.y > boundries.max.y)
+            {
+                Debug.Log("Invalid target world position!");
+                worldPosition = ClampToGrid(worldPosition);
+            }
 
-            int xDistance = worldPosition.x - mapBoundries.min.x;
-            int yDistance = worldPosition.y - mapBoundries.min.y;
+            int xDistance = worldPosition.x - boundries.min.x;
+            int yDistance = worldPosition.y - boundries.min.y;
             return new int2(xDistance, yDistance);
         }
 
+        /// <summary>
+        /// Function that clamps world position of unit inside global map boundaries.
+        /// </summary>
+        /// <param name="worldPosition">Position of unit in world coordinates.</param>
+        /// <returns></returns>
+        private static int2 ClampToGrid(int2 worldPosition)
+        {
+            MapBoundries boundries = WaypointsManager.mapBoundries;
+            int2 clampedWorldPosition = worldPosition;
+
+            if      (clampedWorldPosition.x < boundries.min.x) clampedWorldPosition.x = boundries.min.x;
+            else if (clampedWorldPosition.x > boundries.max.x) clampedWorldPosition.x = boundries.max.x;
+            if      (clampedWorldPosition.y < boundries.min.y) clampedWorldPosition.y = boundries.min.y;
+            else if (clampedWorldPosition.y > boundries.max.y) clampedWorldPosition.y = boundries.max.y;
+
+            return clampedWorldPosition;
+        }
+
+        /// <summary>
+        /// Function that calculates index of waypoint on grid, from world coordinates.
+        /// </summary>
+        /// <param name="worldPosition">Position in world coordinates.</param>
+        /// <returns></returns>
         public static int GetIndexFromWorldPosition(int2 worldPosition)
         {
             int2 gridPosition = GetGridPositionFromWorldPosition(worldPosition);
             return CalculateIndex(gridPosition.x, gridPosition.y, gridSize.x);
         }
 
-        public static int GetRandomWalkableWaypointIndex(Waypoint[] waypoints)
+        /// <summary>
+        /// Function that returns random index on array of walkable waypoint.
+        /// </summary>
+        /// <param name="waypoints">Array of waypoints.</param>
+        /// <returns></returns>
+        public static int GetRandomWalkableWaypointIndex([ReadOnly] Waypoint[] waypoints)
         {
             int maxID = gridSize.x * gridSize.y;
-            while (true)
+            int numTries = 1000;
+            while (numTries>0)
             {
                 int id = UnityEngine.Random.Range(0, maxID);
                 if (waypoints[id].isWalkable)
                 {
                     return id;
                 }
+                else
+                {
+                    numTries--;
+                }
             }
+            Debug.LogError("Could not find walkable navigation point!");
+            return 0;
         }
 
+        /// <summary>
+        /// Function that returns world position of random walkable waypoint.
+        /// </summary>
+        /// <returns></returns>
         public static int2 GetRandomWalkableWaypoint()
         {
             Waypoint[] waypoints = WaypointsManager.Instance.waypoints;
             int maxID = gridSize.x * gridSize.y;
-            while (true)
+            int numTries = 1000;
+            while (numTries > 0)
             {
                 int id = UnityEngine.Random.Range(0, maxID);
                 if (waypoints[id].isWalkable)
                 {
                     return waypoints[id].worldPosition;
                 }
+                else
+                {
+                    numTries--;
+                }
             }
+            Debug.LogError("Could not find walkable navigation point!");
+            return 0;
         }
 
-        public static int2 RoundToGrid(int2 worldPosition)
+        /// <summary>
+        /// Function that rounds world position to int2 grid.
+        /// </summary>
+        /// <param name="worldPosition">Position in world coordinates where float2.y = v.z in world XZ plane.</param>
+        /// <returns></returns>
+        public static int2 RoundToGrid(float2 worldPosition)
         {
             return new int2(math.round(worldPosition));
         }
 
+        /// <summary>
+        /// Function that rounds world position to int2 grid.
+        /// </summary>
+        /// <param name="worldPosition">Position in world coordinates.</param>
+        /// <returns></returns>
         public static int2 RoundToGrid(float3 worldPosition)
         {
             float2 v = new float2(worldPosition.x, worldPosition.z);
             return new int2(math.round(v));
         }
 
+        /// <summary>
+        /// Returns rounded to grid world position of target gameobject.
+        /// </summary>
+        /// <returns></returns>
         public static int2 GetTargetPosition()
         {
             return RoundToGrid(WaypointsManager.Instance.target.position);

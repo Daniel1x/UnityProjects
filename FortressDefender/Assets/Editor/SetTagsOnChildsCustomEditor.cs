@@ -12,9 +12,17 @@ public class SetTagsOnChildsCustomEditor : Editor
 
         SetTagsOnChilds setTagsOnChilds = (SetTagsOnChilds)target;
 
-        if(GUILayout.Button("Set Tags"))
+        GUILayout.BeginHorizontal();
+
+        if (GUILayout.Button("Set Tags"))
         {
             setTagsOnChilds.SetTags();
         }
+        if (GUILayout.Button("Set Custom Tags"))
+        {
+            setTagsOnChilds.SetCustomTags();
+        }
+
+        GUILayout.EndHorizontal();
     }
 }

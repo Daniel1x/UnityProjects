@@ -7,6 +7,9 @@ using Unity.Jobs;
 using Unity.Burst;
 using System;
 
+/// <summary>
+/// Component that holds information about pathfinding start and end points.
+/// </summary>
 [GenerateAuthoringComponent]
 [BurstCompile]
 public struct PathfindingParameters : IComponentData
