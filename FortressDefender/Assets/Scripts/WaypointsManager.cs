@@ -24,7 +24,8 @@ public class WaypointsManager : MonoBehaviour
     /// <summary>
     /// Waypoint Manager Instance. (Singleton pattern)
     /// </summary>
-    public static WaypointsManager Instance;
+    public static WaypointsManager Instance { get => instance; }
+    private static WaypointsManager instance;
     /// <summary>
     /// Map boundaries after grid matching.
     /// </summary>
@@ -41,10 +42,21 @@ public class WaypointsManager : MonoBehaviour
     /// The size of the waypoints grid.
     /// </summary>
     public static int2 GridSize { get => gridSize; }
+
     /// <summary>
     /// Grid of waypoints, stored as array.
     /// </summary>
-    [HideInInspector] public Waypoint[] waypoints;
+    public static Waypoint[] waypoints;
+
+    /// <summary>
+    /// If the waypoints have been modified, the native array of pathnodes should be updated.
+    /// </summary>
+    public static bool waypointHasBeenModified = false;
+    
+    /// <summary>
+    /// Native array of pathnodes, made from waypoints data.
+    /// </summary>
+    public static NativeArray<PathNode> pathNodes;
 
     /// <summary>
     /// Singleton pattern.
@@ -57,7 +69,7 @@ public class WaypointsManager : MonoBehaviour
         }
         else
         {
-            WaypointsManager.Instance = this;
+            WaypointsManager.instance = this;
         }
     }
 
@@ -138,6 +150,29 @@ public class WaypointsManager : MonoBehaviour
                 };
             }
         }
+
+        UpdatePathNodesNativeArray();
+    }
+
+    /// <summary>
+    /// Recreated native array of pathnodes from waypoints data.
+    /// </summary>
+    public static void UpdatePathNodesNativeArray()
+    {
+        if (pathNodes.IsCreated) pathNodes.Dispose();
+
+        int waypointsArrayLength = WaypointsManager.waypoints.Length;
+        pathNodes = new NativeArray<PathNode>(waypointsArrayLength, Allocator.Persistent);
+        CreatePathNodesJob createPathNodesJob = new CreatePathNodesJob { pathNodes = pathNodes, waypoints = new NativeArray<Waypoint>(WaypointsManager.waypoints, Allocator.Temp) };
+        JobHandle createPathNodesJobHandle = createPathNodesJob.Schedule(waypointsArrayLength, 32);
+        createPathNodesJobHandle.Complete();
+
+        WaypointsManager.waypointHasBeenModified = false;
+    }
+
+    private void OnDestroy()
+    {
+        pathNodes.Dispose();
     }
 
     /// <summary>
@@ -195,14 +230,33 @@ public class WaypointsManager : MonoBehaviour
         /// </summary>
         /// <param name="worldPosition">Position in world coordinates.</param>
         /// <returns></returns>
-        public static int2 GetGridPositionFromWorldPosition(int2 worldPosition)
+        public static int2 GetGridPositionFromWorldPosition(int2 worldPosition, MapBoundries boundries)
         {
-            MapBoundries boundries = WaypointsManager.mapBoundries;
             if (worldPosition.x < boundries.min.x || worldPosition.x > boundries.max.x ||
                 worldPosition.y < boundries.min.y || worldPosition.y > boundries.max.y)
             {
                 Debug.Log("Invalid target world position!");
-                worldPosition = ClampToGrid(worldPosition);
+                worldPosition = ClampToGrid(worldPosition, boundries);
+            }
+
+            int xDistance = worldPosition.x - boundries.min.x;
+            int yDistance = worldPosition.y - boundries.min.y;
+            return new int2(xDistance, yDistance);
+        }
+
+        /// <summary>
+        /// Function that calculates position on grid, from world coordinates.
+        /// </summary>
+        /// <param name="worldPosition">Position in world coordinates.</param>
+        /// <returns></returns>
+        public static int2 GetGridPositionFromWorldPosition(int2 worldPosition)
+        {
+            MapBoundries boundries = WaypointsManager.MapBoundries;
+            if (worldPosition.x < boundries.min.x || worldPosition.x > boundries.max.x ||
+                worldPosition.y < boundries.min.y || worldPosition.y > boundries.max.y)
+            {
+                Debug.Log("Invalid target world position!");
+                worldPosition = ClampToGrid(worldPosition, boundries);
             }
 
             int xDistance = worldPosition.x - boundries.min.x;
@@ -215,9 +269,8 @@ public class WaypointsManager : MonoBehaviour
         /// </summary>
         /// <param name="worldPosition">Position of unit in world coordinates.</param>
         /// <returns></returns>
-        private static int2 ClampToGrid(int2 worldPosition)
+        public static int2 ClampToGrid(int2 worldPosition, MapBoundries boundries)
         {
-            MapBoundries boundries = WaypointsManager.mapBoundries;
             int2 clampedWorldPosition = worldPosition;
 
             if      (clampedWorldPosition.x < boundries.min.x) clampedWorldPosition.x = boundries.min.x;
@@ -268,9 +321,8 @@ public class WaypointsManager : MonoBehaviour
         /// Function that returns world position of random walkable waypoint.
         /// </summary>
         /// <returns></returns>
-        public static int2 GetRandomWalkableWaypoint()
+        public static int2 GetRandomWalkableWaypoint([ReadOnly] Waypoint[] waypoints)
         {
-            Waypoint[] waypoints = WaypointsManager.Instance.waypoints;
             int maxID = gridSize.x * gridSize.y;
             int numTries = 1000;
             while (numTries > 0)
@@ -294,7 +346,7 @@ public class WaypointsManager : MonoBehaviour
         /// </summary>
         /// <param name="worldPosition">Position in world coordinates where float2.y = v.z in world XZ plane.</param>
         /// <returns></returns>
-        public static int2 RoundToGrid(float2 worldPosition)
+        public static int2 RoundToGrid([ReadOnly] float2 worldPosition)
         {
             return new int2(math.round(worldPosition));
         }
@@ -304,7 +356,7 @@ public class WaypointsManager : MonoBehaviour
         /// </summary>
         /// <param name="worldPosition">Position in world coordinates.</param>
         /// <returns></returns>
-        public static int2 RoundToGrid(float3 worldPosition)
+        public static int2 RoundToGrid([ReadOnly] float3 worldPosition)
         {
             float2 v = new float2(worldPosition.x, worldPosition.z);
             return new int2(math.round(v));
@@ -318,19 +370,51 @@ public class WaypointsManager : MonoBehaviour
         {
             return RoundToGrid(WaypointsManager.Instance.target.position);
         }
+
+        /// <summary>
+        /// Returns position of targer waypoint.
+        /// </summary>
+        /// <returns></returns>
+        public static int2 GetTargetPositionFromWaypoint()
+        {
+            return GetTargetWaypoint().worldPosition;
+        }
+
+        /// <summary>
+        /// Returns from WaypointManager.Instance an array of waypoints.
+        /// </summary>
+        /// <returns></returns>
+        public static Waypoint[] GetWaypointsArray()
+        {
+            return WaypointsManager.waypoints;
+        }
+
+        /// <summary>
+        /// Returns from WaypointManager.Instance an native array of waypoints.
+        /// </summary>
+        /// <returns></returns>
+        public static NativeArray<Waypoint> GetWaypointsNativeArray()
+        {
+            return new NativeArray<Waypoint>(WaypointsManager.waypoints, Allocator.Persistent);
+        }
+
+        /// <summary>
+        /// Checks if the target waypoint is walkable.
+        /// </summary>
+        /// <returns></returns>
+        public static bool IsTargetWaypointWalkable()
+        {
+            return WaypointsManager.waypoints[GetIndexFromWorldPosition(GetTargetPosition())].isWalkable;
+        }
+
+        /// <summary>
+        /// Return target waypoint.
+        /// </summary>
+        /// <returns></returns>
+        public static Waypoint GetTargetWaypoint()
+        {
+            return WaypointsManager.waypoints[GetIndexFromWorldPosition(GetTargetPosition())];
+        }
     }
 }
 
-
-/// <summary>
-/// Structure defining the limits of the grid. 
-/// The min and max values mean the plane values, 
-/// where the XY plane for int2 means the XZ plane in global coordinates.
-/// </summary>
-[BurstCompile]
-[Serializable]
-public struct MapBoundries
-{
-    public int2 min;
-    public int2 max;
-}

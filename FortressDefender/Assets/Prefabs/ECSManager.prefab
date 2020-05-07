@@ -46,4 +46,7 @@ MonoBehaviour:
   unitPrefab: {fileID: 3109311877120263859, guid: ac17d19891a7d9c47a71fdd4f598d186,
     type: 3}
   textBox: {fileID: 0}
-  entitiesToSpawn: 250
+  entitiesToSpawn: 2000
+  floorLayerMask:
+    serializedVersion: 2
+    m_Bits: 256

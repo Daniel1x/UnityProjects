@@ -28,4 +28,8 @@ public struct Waypoint
     /// A variable that determines whether a waypoint can be crossed.
     /// </summary>
     public bool isWalkable;
+    /// <summary>
+    /// Position of waypoint in world coordinates, as float3.
+    /// </summary>
+    public float3 worldPosition3f { get => new float3(worldPosition.x, 0f, worldPosition.y); }
 }
