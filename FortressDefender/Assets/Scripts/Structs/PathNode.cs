@@ -143,6 +143,18 @@ public struct PathNode : IEquatable<PathNode>
         fCost = gCost + hCost;
     }
 
+    /// <summary>
+    /// Function that calculated hCost to target node.
+    /// </summary>
+    /// <param name="to">Target node position in grid coordinates.</param>
+    public void CalculateHCost(int2 to)
+    {
+        int xDistance = math.abs(x - to.x);
+        int yDistance = math.abs(y - to.y);
+        int difference = math.abs(xDistance - yDistance);
+        int distance = (14 * math.min(xDistance, yDistance)) + (10 * difference);
+        hCost = distance;
+    }
 
 
     // ##############################
@@ -154,9 +166,18 @@ public struct PathNode : IEquatable<PathNode>
         return this == other;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object other)
     {
-        return base.Equals(obj);
+        //Check for null and compare run-time types.
+        if ((other == null) || !this.GetType().Equals(other.GetType()))
+        {
+            return false;
+        }
+        else
+        {
+            PathNode otherPathNode = (PathNode)other;
+            return (this.x == otherPathNode.x) && (this.y == otherPathNode.y);
+        }
     }
 
     public override int GetHashCode()
@@ -166,7 +187,7 @@ public struct PathNode : IEquatable<PathNode>
 
     public override string ToString()
     {
-        return base.ToString();
+        return new int2(x, y).ToString();
     }
 
     public static bool operator ==(PathNode node1, PathNode node2)

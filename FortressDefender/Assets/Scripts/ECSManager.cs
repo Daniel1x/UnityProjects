@@ -80,9 +80,8 @@ public class ECSManager : MonoBehaviour
         SpawnEntities(6);
 
         UpdateTextBox();
-
-
-        // TESTING
+        
+        // TESTING BLOCKING CHOSEN WAYPOINTS
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
