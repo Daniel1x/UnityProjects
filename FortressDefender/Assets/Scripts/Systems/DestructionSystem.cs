@@ -6,6 +6,7 @@ using Unity.Jobs;
 using Unity.Mathematics;
 using Unity.Burst;
 using Unity.Collections;
+using Unity.Transforms;
 
 [UpdateAfter(typeof(UnitMovementSystem))]
 public class DestrucionSystem : JobComponentSystem

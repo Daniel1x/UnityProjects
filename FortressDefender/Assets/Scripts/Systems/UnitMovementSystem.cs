@@ -8,6 +8,7 @@ using Unity.Burst;
 using Unity.Collections;
 using Unity.Transforms;
 
+[UpdateAfter(typeof(PathfindingSystem))]
 public class UnitMovementSystem : JobComponentSystem
 {
     private EndSimulationEntityCommandBufferSystem commandBufferSystem;
@@ -31,7 +32,7 @@ public class UnitMovementSystem : JobComponentSystem
         int2 targetWorldPosition = targetWaypoint.worldPosition;
 
         // Get size of map.
-        MapBoundries boundries = WaypointsManager.MapBoundries;
+        MapBoundaries boundaries = WaypointsManager.MapBoundaries;
 
         JobHandle jobHandle = Entities.WithName("UnitMovementSystem")
             .ForEach((int entityInQueryIndex, Entity entity, DynamicBuffer<PathPositionsBuffer> path, ref Translation position, ref UnitData unitData, ref LifetimeData lifetimeData) =>
@@ -75,8 +76,8 @@ public class UnitMovementSystem : JobComponentSystem
                             needNewPath = true,
                             startWorldPoint = startWorldPos,
                             endWorldPoint = targetWorldPosition,
-                            startGridPoint = WaypointsManager.Func.GetGridPositionFromWorldPosition(startWorldPos, boundries),
-                            endGridPoint = WaypointsManager.Func.GetGridPositionFromWorldPosition(targetWorldPosition, boundries)
+                            startGridPoint = WaypointsManager.Func.GetGridPositionFromWorldPosition(startWorldPos, boundaries),
+                            endGridPoint = WaypointsManager.Func.GetGridPositionFromWorldPosition(targetWorldPosition, boundaries)
                         };
                         commandBuffer.AddComponent(entityInQueryIndex, entity, pathfindingParameters);
                     }

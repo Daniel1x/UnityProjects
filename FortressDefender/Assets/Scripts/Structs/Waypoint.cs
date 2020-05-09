@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Mathematics;
 using System;
+using Unity.Burst;
 
 /// <summary>
 /// Structure that defines the waypoint properties.
 /// </summary>
 [Serializable]
+[BurstCompile]
 public struct Waypoint
 {
     /// <summary>
@@ -29,7 +31,19 @@ public struct Waypoint
     /// </summary>
     public bool isWalkable;
     /// <summary>
+    /// Variable that determines if a waypoint is blocked by a wall, if it's true, do not set that waypoint as a walkable.
+    /// </summary>
+    public bool isBlockedByWall;
+    /// <summary>
     /// Position of waypoint in world coordinates, as float3.
     /// </summary>
     public float3 worldPosition3f { get => new float3(worldPosition.x, 0f, worldPosition.y); }
+    /// <summary>
+    /// Function that tries to set value of isWalkable, with respect to isBlockedByWall.
+    /// </summary>
+    /// <param name="isWalkable">Value that will be set if possible.</param>
+    public void TryToSetAsWalkable(bool isWalkable)
+    {
+        if (!isBlockedByWall) this.isWalkable = isWalkable;
+    }
 }

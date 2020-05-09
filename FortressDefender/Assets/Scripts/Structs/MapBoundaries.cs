@@ -13,7 +13,7 @@ using System;
 /// </summary>
 [BurstCompile]
 [Serializable]
-public struct MapBoundries
+public struct MapBoundaries
 {
     public int2 min;
     public int2 max;
