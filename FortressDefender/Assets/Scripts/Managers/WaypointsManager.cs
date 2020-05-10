@@ -20,7 +20,7 @@ public class WaypointsManager : MonoBehaviour
     /// <summary>
     /// Transform of the gameobject that represents the spawn point.
     /// </summary>
-    public Transform spawnPoint;
+    public Transform spawnPoint = null;
     /// <summary>
     /// Transform of the gameobject that represents the target point.
     /// </summary>
@@ -508,7 +508,7 @@ public class WaypointsManager : MonoBehaviour
             Debug.Log("A global path has been determined.");
             for (int i = 0; i < globalPath.Length - 1; i++)
             {
-                Debug.DrawLine(math.up() + globalPath[i].worldPosition, math.up() + globalPath[i + 1].worldPosition, Color.yellow, 15f);
+                Debug.DrawLine(math.up() + globalPath[i].worldPosition, math.up() + globalPath[i + 1].worldPosition, Color.yellow, 5f);
             }
         }
 

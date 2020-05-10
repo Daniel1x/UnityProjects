@@ -19,7 +19,7 @@ public class CameraMovement : MonoBehaviour
         Cursor.visible = true;
     }
 
-    void Update()
+    void LateUpdate()
     {
         rotationX += Input.GetAxis("Mouse X") * cameraSensitivity * Time.deltaTime;
         rotationY += Input.GetAxis("Mouse Y") * cameraSensitivity * Time.deltaTime;

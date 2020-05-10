@@ -202,11 +202,8 @@ public struct FindGlobalPathJob : IJob
     /// <param name="pathPositionsBuffer">Reference to dynamic buffer of path positions.</param>
     private static void CalculatePath(NativeArray<PathNode> pathNodes, PathNode endNode, ref NativeArray<PathPositionsBuffer> pathPositionsBuffer, NativeArray<int> pathSize)
     {
-        if (endNode.cameFromNodeIndex == -1)
-        {
-            //There is no path!
-        }
-        else
+        // If the end node has a previous node index leading to it, the path exists.
+        if (endNode.cameFromNodeIndex != -1)
         {
             PathNode node = endNode;
             pathPositionsBuffer[0] = new PathPositionsBuffer { worldPosition = node.worldPosition };
@@ -219,6 +216,7 @@ public struct FindGlobalPathJob : IJob
             }
             pathSize[0] = index;
         }
+        // Else: There is no path.
     }
 
     /// <summary>

@@ -4910,7 +4910,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &963194227
 Camera:
   m_ObjectHideFlags: 0
@@ -4975,7 +4975,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8069f26dbaa1a424b8c4d741fd43a78b, type: 3}
   m_Name: 
@@ -8746,6 +8746,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1771621918}
+  - component: {fileID: 1771621919}
   m_Layer: 0
   m_Name: SpawnPoint
   m_TagString: Untagged
@@ -8768,6 +8769,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1771621919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1771621917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6caccce9eec53b498f9c3e99396d401, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!21 &1774288504
 Material:
   serializedVersion: 6
@@ -9245,6 +9258,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1839875804}
+  - component: {fileID: 1839875805}
   m_Layer: 0
   m_Name: TargetPoint
   m_TagString: Untagged
@@ -9267,6 +9281,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1839875805
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1839875803}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6caccce9eec53b498f9c3e99396d401, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!21 &1872536121
 Material:
   serializedVersion: 6

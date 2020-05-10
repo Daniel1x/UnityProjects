@@ -86,19 +86,27 @@ public class ECSManager : MonoBehaviour
     private void SpawnUnitEntities(int entitiesToSpawn)
     {
         float3 spawnPoint = WaypointsManager.Instance.spawnPoint.position;
+        NativeArray<Entity> units = entityManager.Instantiate(unitEntity, entitiesToSpawn, Allocator.Temp);
+
         for (int i = 0; i < entitiesToSpawn; i++)
         {
-            float3 position = spawnPoint + new float3(UnityEngine.Random.Range(-3f, 3f), 0f, UnityEngine.Random.Range(-3f, 3f));
+            float range = 3;
+            float3 position = spawnPoint + new float3(UnityEngine.Random.Range(-range, range), 0f, UnityEngine.Random.Range(-range, range));
             int2 roundedToGridPosition = WaypointsManager.Func.RoundToGrid(position);
+
+            while (!WaypointsManager.waypoints[WaypointsManager.Func.GetIndexFromWorldPosition(roundedToGridPosition)].isWalkable)
+            {
+                range += 0.5f;
+                position = spawnPoint + new float3(UnityEngine.Random.Range(-range, range), 0f, UnityEngine.Random.Range(-range, range));
+                roundedToGridPosition = WaypointsManager.Func.RoundToGrid(position);
+            }
+
             position = new float3(roundedToGridPosition.x, 0f, roundedToGridPosition.y);
 
-            // If waypoint at spawn position is walkable, instantiate entity.
-            if (WaypointsManager.waypoints[WaypointsManager.Func.GetIndexFromWorldPosition(roundedToGridPosition)].isWalkable)
-            {
-                Entity entity = entityManager.Instantiate(unitEntity);
-                entityManager.SetComponentData(entity, new Translation { Value = position });
-            }
+            entityManager.SetComponentData(units[i], new Translation { Value = position });
         }
+
+        units.Dispose();
     }
 
     /// <summary>
@@ -195,7 +203,7 @@ public class ECSManager : MonoBehaviour
         int numEntities = (int)(passedTime * entitiesToSpawnPerSecond);
         passedTime -= numEntities / entitiesToSpawnPerSecond;
 
-        SpawnUnitEntities(numEntities);
+        if (numEntities > 0) SpawnUnitEntities(numEntities);
     }
 
     /// <summary>
